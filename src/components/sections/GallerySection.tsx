@@ -5,6 +5,7 @@ import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { type GalleryItem } from "@/lib/types";
 import { CloudDividerTop } from "@/components/ui/CloudDividers";
 import { BloomImage } from "@/components/ui/BloomImage";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface GallerySectionProps {
@@ -122,7 +123,7 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mx-auto max-w-3xl text-center">
+        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-3xl font-black tracking-tight text-[#1e1b4b] sm:text-5xl lg:text-6xl">
             {dict.gallery.title}
           </h2>
@@ -130,7 +131,7 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
           <p className="mt-4 text-base leading-relaxed font-bold text-slate-600 sm:text-lg">
             {dict.gallery.description}
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* 3D Smooth Polaroid Gallery Grid */}
         <div className="mt-12 grid grid-cols-1 gap-8 sm:mt-16 sm:grid-cols-2 lg:grid-cols-3">
@@ -144,41 +145,46 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
                   : "rotate-[-1deg] hover:rotate-[0deg]";
 
             return (
-              <div
+              <ScrollReveal
                 key={img.id}
-                onClick={() => setActiveImageIndex(actualIndex)}
-                className={`group relative cursor-pointer overflow-hidden rounded-[2rem] border-4 border-white bg-white p-4 pb-6 shadow-[0_10px_0_#d1e3ec,0_20px_25px_-5px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_14px_0_#d1e3ec,0_25px_30px_-5px_rgba(0,0,0,0.12)] ${rotationStyle}`}
+                animation="pop-in"
+                delay={index * 120}
               >
-                <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100">
-                  <BloomImage
-                    src={img.url}
-                    alt={img.alt || "Bloom Universe moment"}
-                    fill
-                    quality={75}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                  {/* Hover Magnify Icon */}
-                  <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[#2baee2] shadow-lg">
-                      <Maximize2 className="h-6 w-6" />
+                <div
+                  onClick={() => setActiveImageIndex(actualIndex)}
+                  className={`group relative cursor-pointer overflow-hidden rounded-[2rem] border-4 border-white bg-white p-4 pb-6 shadow-[0_10px_0_#d1e3ec,0_20px_25px_-5px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_14px_0_#d1e3ec,0_25px_30px_-5px_rgba(0,0,0,0.12)] ${rotationStyle}`}
+                >
+                  <div className="relative aspect-square overflow-hidden rounded-2xl border-2 border-slate-100 bg-slate-100">
+                    <BloomImage
+                      src={img.url}
+                      alt={img.alt || "Bloom Universe moment"}
+                      fill
+                      quality={75}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                    {/* Hover Magnify Icon */}
+                    <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/90 text-[#2baee2] shadow-lg">
+                        <Maximize2 className="h-6 w-6" />
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-4 text-center">
-                  <p className="font-heading text-base font-bold text-[#1e1b4b]">
-                    {img.alt}
-                  </p>
+                  <div className="mt-4 text-center">
+                    <p className="font-heading text-base font-bold text-[#1e1b4b]">
+                      {img.alt}
+                    </p>
+                  </div>
                 </div>
-              </div>
+              </ScrollReveal>
             );
           })}
         </div>
 
         {/* 3D Pagination Controls */}
         {totalPages > 1 && (
-          <div className="mt-12 flex items-center justify-center gap-2 sm:gap-3">
+          <ScrollReveal animation="fade-up" delay={200} className="mt-12 flex items-center justify-center gap-2 sm:gap-3">
             {/* Prev Button */}
             <button
               type="button"
@@ -220,7 +226,7 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
             >
               <ChevronRight className="h-5 w-5" />
             </button>
-          </div>
+          </ScrollReveal>
         )}
       </div>
 

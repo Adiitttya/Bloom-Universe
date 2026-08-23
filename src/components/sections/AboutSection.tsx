@@ -3,6 +3,7 @@
 import * as React from "react";
 import { type AboutContent, type AboutCardItem } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
+import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface AboutSectionProps {
@@ -74,7 +75,7 @@ export function AboutSection({ content, cards }: AboutSectionProps) {
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="mx-auto max-w-3xl text-center">
+        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
           <h2 className="font-heading text-3xl font-black tracking-tight text-[#1e1b4b] sm:text-5xl lg:text-6xl">
             {title}
           </h2>
@@ -82,11 +83,11 @@ export function AboutSection({ content, cards }: AboutSectionProps) {
           <p className="mt-4 text-base leading-relaxed font-bold text-slate-600 sm:mt-6 sm:text-lg">
             {description}
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* 3 Pillars / Values in Colorful Cartoon Cards */}
         <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-16 md:grid-cols-3">
-          {displayCards.map((card) => {
+          {displayCards.map((card, idx) => {
             const colorKey = (card.color || "blue").toLowerCase();
             const colorStyle =
               PILLAR_COLOR_STYLES[colorKey] || PILLAR_COLOR_STYLES.blue;
@@ -100,33 +101,31 @@ export function AboutSection({ content, cards }: AboutSectionProps) {
                 `p${card.order + 1}` as keyof typeof dict.about.pillars
               ];
 
-            // Database is Single Source of Truth
-            const cardTitle =
-              locale === "en" && pillarDict?.title
-                ? pillarDict.title
-                : card.title;
-
-            const cardDesc =
-              locale === "en" && pillarDict?.description
-                ? pillarDict.description
-                : card.description;
-
-            const cardNum = card.number || pillarDict?.number;
+            // Prioritize dictionary translation for seamless multi-language support
+            const cardTitle = pillarDict?.title || card.title;
+            const cardDesc = pillarDict?.description || card.description;
+            const cardNum = pillarDict?.number || card.number;
 
             return (
-              <Card key={card.id} className="p-8">
-                <div
-                  className={`font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-black ${colorStyle.badgeClass}`}
-                >
-                  {cardNum}
-                </div>
-                <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
-                  {cardTitle}
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
-                  {cardDesc}
-                </p>
-              </Card>
+              <ScrollReveal
+                key={card.id}
+                animation="fade-up"
+                delay={idx * 120}
+              >
+                <Card className="h-full p-8">
+                  <div
+                    className={`font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-black ${colorStyle.badgeClass}`}
+                  >
+                    {cardNum}
+                  </div>
+                  <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
+                    {cardTitle}
+                  </h3>
+                  <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
+                    {cardDesc}
+                  </p>
+                </Card>
+              </ScrollReveal>
             );
           })}
         </div>

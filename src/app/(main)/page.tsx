@@ -130,12 +130,10 @@ export default async function HomePage() {
 
   return (
     <>
-      <HeroSection content={heroContent} />
+      {/* Hero & About intentionally use the i18n Dictionary for full multi-language translation */}
+      <HeroSection />
       <ServerStats initialStats={discordStats} />
-      <AboutSection
-        content={aboutContent}
-        cards={aboutCards.length > 0 ? aboutCards : undefined}
-      />
+      <AboutSection />
       <GallerySection images={galleryImages} />
       <SubWebCards items={subWebs.length > 0 ? subWebs : undefined} />
       <SocialLinks links={socialLinks.length > 0 ? socialLinks : undefined} />

@@ -10,3 +10,5 @@ export * from "./ScrollToTop";
 export * from "./AnimatedCounter";
 export * from "./LanguageToggle";
 export * from "./BloomImage";
+export * from "./ScrollReveal";
+export * from "./PlayfulDecorations";
