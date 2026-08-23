@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image, { type ImageProps } from "next/image";
-import { Sparkles } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface BloomImageProps extends Omit<ImageProps, "onLoad"> {
@@ -30,12 +30,12 @@ export function BloomImage({
         containerClassName
       )}
     >
-      {/* Cartoon Shimmer Loading Skeleton */}
+      {/* Loading Skeleton with Standard Rotating Circular Spinner */}
       {isLoading && (
         <div className="absolute inset-0 z-10 flex animate-pulse items-center justify-center bg-gradient-to-tr from-[#e0f4fc] via-[#fff8d6] to-[#f3ebff]">
           {showShimmerIcon && (
-            <div className="flex h-8 w-8 animate-spin items-center justify-center rounded-full bg-white/80 text-[#2baee2] shadow-sm">
-              <Sparkles className="h-4 w-4" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-[#2baee2] shadow-md backdrop-blur-xs">
+              <Loader2 className="h-5 w-5 animate-spin" />
             </div>
           )}
         </div>

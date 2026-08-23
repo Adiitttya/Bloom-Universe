@@ -24,7 +24,10 @@ const nunito = Nunito({
 function getMetadataBase(): URL {
   try {
     const rawUrl = SITE_CONFIG.url;
-    if (rawUrl && (rawUrl.startsWith("http://") || rawUrl.startsWith("https://"))) {
+    if (
+      rawUrl &&
+      (rawUrl.startsWith("http://") || rawUrl.startsWith("https://"))
+    ) {
       return new URL(rawUrl);
     }
     return new URL("https://bloom-universe.vercel.app");

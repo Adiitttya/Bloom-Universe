@@ -4,7 +4,10 @@
 
 function getSiteUrl(): string {
   const envUrl = process.env.NEXT_PUBLIC_APP_URL;
-  if (envUrl && (envUrl.startsWith("http://") || envUrl.startsWith("https://"))) {
+  if (
+    envUrl &&
+    (envUrl.startsWith("http://") || envUrl.startsWith("https://"))
+  ) {
     return envUrl;
   }
   if (process.env.VERCEL_URL) {
