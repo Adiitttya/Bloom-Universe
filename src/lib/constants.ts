@@ -2,12 +2,23 @@
  * Global Constants for Bloom Universe (Bloomun)
  */
 
+function getSiteUrl(): string {
+  const envUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (envUrl && (envUrl.startsWith("http://") || envUrl.startsWith("https://"))) {
+    return envUrl;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "https://bloom-universe.vercel.app";
+}
+
 export const SITE_CONFIG = {
   name: "Bloom Universe",
   shortName: "Bloomun",
   description:
     "The ultimate hangout community to make new friends, game together, host watch parties, and chill anytime.",
-  url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+  url: getSiteUrl(),
   ogImage: "/Bloom.jpg",
   logo: "/Bloom.jpg",
 } as const;

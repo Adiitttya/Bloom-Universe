@@ -21,8 +21,20 @@ const nunito = Nunito({
   display: "swap",
 });
 
+function getMetadataBase(): URL {
+  try {
+    const rawUrl = SITE_CONFIG.url;
+    if (rawUrl && (rawUrl.startsWith("http://") || rawUrl.startsWith("https://"))) {
+      return new URL(rawUrl);
+    }
+    return new URL("https://bloom-universe.vercel.app");
+  } catch {
+    return new URL("https://bloom-universe.vercel.app");
+  }
+}
+
 export const metadata: Metadata = {
-  metadataBase: new URL(SITE_CONFIG.url),
+  metadataBase: getMetadataBase(),
   title: {
     default: `${SITE_CONFIG.name} | Official Community Portal`,
     template: `%s | ${SITE_CONFIG.name}`,
