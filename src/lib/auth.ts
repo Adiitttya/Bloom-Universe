@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
+import { authConfig } from "@/lib/auth.config";
 import { db } from "@/lib/db";
 import { fetchDiscordGuildMember, getMemberHighestRole } from "@/lib/discord";
 import { Role } from "@prisma/client";
@@ -7,6 +8,7 @@ import type { HighestRoleInfo } from "@/lib/types";
 import { getWIBDate } from "@/lib/utils";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Discord({
       clientId: process.env.AUTH_DISCORD_ID,
@@ -52,6 +54,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
   },
   callbacks: {
+    ...authConfig.callbacks,
     async jwt({ token, profile, account }) {
       if (account && profile) {
         const discordId = profile.id as string;

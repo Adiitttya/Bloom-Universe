@@ -1,24 +1,7 @@
-import { auth } from "@/lib/auth";
-import { NextResponse } from "next/server";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 
-export default auth((req) => {
-  const isLoggedIn = Boolean(req.auth);
-  const isAdmin = Boolean(req.auth?.user?.isAdmin);
-  const pathname = req.nextUrl.pathname;
-
-  if (pathname.startsWith("/admin")) {
-    if (!isLoggedIn) {
-      const loginUrl = new URL("/", req.nextUrl.origin);
-      loginUrl.searchParams.set("login", "true");
-      return NextResponse.redirect(loginUrl);
-    }
-    if (!isAdmin) {
-      return NextResponse.redirect(new URL("/forbidden", req.nextUrl.origin));
-    }
-  }
-
-  return NextResponse.next();
-});
+export default NextAuth(authConfig).auth;
 
 export const config = {
   matcher: ["/admin/:path*"],
