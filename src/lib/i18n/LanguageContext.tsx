@@ -6,7 +6,7 @@ import { dictionaries, type Locale } from "./dictionaries";
 interface LanguageContextType {
   locale: Locale;
   setLocale: (locale: Locale) => void;
-  dict: typeof dictionaries.en;
+  dict: typeof dictionaries.id;
 }
 
 const LanguageContext = React.createContext<LanguageContextType | undefined>(
@@ -17,7 +17,7 @@ const STORAGE_KEY = "bloom_language";
 
 export function LanguageProvider({
   children,
-  initialLocale = "en",
+  initialLocale = "id",
 }: {
   children: React.ReactNode;
   initialLocale?: Locale;
@@ -34,7 +34,7 @@ export function LanguageProvider({
     }
   }, []);
 
-  const dict = dictionaries[locale] || dictionaries.en;
+  const dict = dictionaries[locale] || dictionaries.id;
 
   const value = React.useMemo(
     () => ({

@@ -1,36 +1,76 @@
 "use client";
 
 import * as React from "react";
-import { Users, Headphones } from "lucide-react";
-import { type AboutContent } from "@/lib/types";
+import { type AboutContent, type AboutCardItem } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
-import { AnimatedCounter } from "@/components/ui/AnimatedCounter";
-import { type DiscordServerStats } from "@/lib/discord";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 
 interface AboutSectionProps {
   content?: Partial<AboutContent>;
-  initialStats?: DiscordServerStats;
+  cards?: AboutCardItem[];
 }
 
-export function AboutSection({ content, initialStats }: AboutSectionProps) {
-  const { dict } = useLanguage();
+const DEFAULT_ABOUT_CARDS: AboutCardItem[] = [
+  {
+    id: "pillar-1",
+    number: "01",
+    title: "Squad Up & Play",
+    description:
+      "Never game alone. Find teammates for Valorant, Mobile Legends, Roblox, Minecraft, or casual party games in seconds.",
+    color: "blue",
+    order: 0,
+  },
+  {
+    id: "pillar-2",
+    number: "02",
+    title: "Watch & Chill Nights",
+    description:
+      "Cozy community movie streams, anime watch parties, music jamming sessions, and spontaneous voice lounge hangouts.",
+    color: "yellow",
+    order: 1,
+  },
+  {
+    id: "pillar-3",
+    number: "03",
+    title: "Make Real Friends & Vibe",
+    description:
+      "A warm, welcoming, and wholesome environment to network, share passions, tell stories, and build genuine friendships.",
+    color: "purple",
+    order: 2,
+  },
+];
+
+const PILLAR_COLOR_STYLES: Record<
+  string,
+  {
+    badgeClass: string;
+  }
+> = {
+  blue: {
+    badgeClass:
+      "border-[#2baee2] bg-[#e0f4fc] text-[#2baee2] shadow-[0_4px_0_#2baee2]",
+  },
+  yellow: {
+    badgeClass:
+      "border-[#ffc700] bg-[#fff8d6] text-[#b38600] shadow-[0_4px_0_#ffc700]",
+  },
+  purple: {
+    badgeClass:
+      "border-[#7952bd] bg-[#f3ebff] text-[#7952bd] shadow-[0_4px_0_#7952bd]",
+  },
+};
+
+export function AboutSection({ content, cards }: AboutSectionProps) {
+  const { dict, locale } = useLanguage();
 
   const title = content?.title || dict.about.title;
   const description = content?.description || dict.about.description;
-
-  const stats = initialStats || {
-    totalMembers: 0,
-    onlineMembers: 0,
-    voiceMembers: 0,
-    guildName: "Bloom Universe",
-    isLive: false,
-  };
+  const displayCards = cards && cards.length > 0 ? cards : DEFAULT_ABOUT_CARDS;
 
   return (
     <section
       id="about"
-      className="relative bg-[#fffdf5] pt-10 pb-16 text-[#1e1b4b] sm:pt-14 sm:pb-20"
+      className="relative bg-[#fffdf5] pt-8 pb-16 text-[#1e1b4b] sm:pt-10 sm:pb-20"
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -44,100 +84,51 @@ export function AboutSection({ content, initialStats }: AboutSectionProps) {
           </p>
         </div>
 
-        {/* 3D Cartoon Live Discord Server Stats Grid */}
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-16 sm:grid-cols-3">
-          {/* 1. Total Members */}
-          <Card className="flex flex-col items-center justify-between p-7 text-center">
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#2baee2] bg-[#e0f4fc] text-[#2baee2] shadow-[0_4px_0_#2baee2]">
-              <Users className="h-7 w-7" />
-            </div>
-            <div className="font-heading text-4xl font-black text-[#2baee2] sm:text-5xl lg:text-6xl">
-              <AnimatedCounter
-                value={stats.totalMembers}
-                duration={950}
-                className="font-heading"
-              />
-            </div>
-            <div className="font-heading mt-2 text-sm font-bold text-[#1e1b4b] sm:text-base">
-              {dict.about.stats.totalMembers}
-            </div>
-          </Card>
-
-          {/* 2. Online Members */}
-          <Card className="flex flex-col items-center justify-between p-7 text-center">
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#10b981] bg-[#dcfce7] text-[#10b981] shadow-[0_4px_0_#10b981]">
-              <span className="relative flex h-5 w-5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-5 w-5 rounded-full bg-emerald-500" />
-              </span>
-            </div>
-            <div className="font-heading text-4xl font-black text-[#10b981] sm:text-5xl lg:text-6xl">
-              <AnimatedCounter
-                value={stats.onlineMembers}
-                duration={950}
-                className="font-heading"
-              />
-            </div>
-            <div className="font-heading mt-2 text-sm font-bold text-[#1e1b4b] sm:text-base">
-              {dict.about.stats.onlineMembers}
-            </div>
-          </Card>
-
-          {/* 3. Voice Active Members */}
-          <Card className="flex flex-col items-center justify-between p-7 text-center">
-            <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-[#7952bd] bg-[#f3ebff] text-[#7952bd] shadow-[0_4px_0_#7952bd]">
-              <Headphones className="h-7 w-7" />
-            </div>
-            <div className="font-heading text-4xl font-black text-[#7952bd] sm:text-5xl lg:text-6xl">
-              <AnimatedCounter
-                value={stats.voiceMembers}
-                duration={950}
-                className="font-heading"
-              />
-            </div>
-            <div className="font-heading mt-2 text-sm font-bold text-[#1e1b4b] sm:text-base">
-              {dict.about.stats.voiceMembers}
-            </div>
-          </Card>
-        </div>
-
         {/* 3 Pillars / Values in Colorful Cartoon Cards */}
         <div className="mt-12 grid grid-cols-1 gap-6 sm:mt-16 md:grid-cols-3">
-          <Card className="p-8">
-            <div className="font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-[#2baee2] bg-[#e0f4fc] text-xl font-black text-[#2baee2] shadow-[0_4px_0_#2baee2]">
-              {dict.about.pillars.p1.number}
-            </div>
-            <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
-              {dict.about.pillars.p1.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
-              {dict.about.pillars.p1.description}
-            </p>
-          </Card>
+          {displayCards.map((card) => {
+            const colorKey = (card.color || "blue").toLowerCase();
+            const colorStyle =
+              PILLAR_COLOR_STYLES[colorKey] || PILLAR_COLOR_STYLES.blue;
 
-          <Card className="p-8">
-            <div className="font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-[#ffc700] bg-[#fff8d6] text-xl font-black text-[#b38600] shadow-[0_4px_0_#ffc700]">
-              {dict.about.pillars.p2.number}
-            </div>
-            <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
-              {dict.about.pillars.p2.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
-              {dict.about.pillars.p2.description}
-            </p>
-          </Card>
+            // Translated title, description, and number if available in dictionary
+            const pillarDict =
+              dict.about.pillars?.[
+                card.id as keyof typeof dict.about.pillars
+              ] ||
+              dict.about.pillars?.[
+                `p${card.order + 1}` as keyof typeof dict.about.pillars
+              ];
 
-          <Card className="p-8">
-            <div className="font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 border-[#7952bd] bg-[#f3ebff] text-xl font-black text-[#7952bd] shadow-[0_4px_0_#7952bd]">
-              {dict.about.pillars.p3.number}
-            </div>
-            <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
-              {dict.about.pillars.p3.title}
-            </h3>
-            <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
-              {dict.about.pillars.p3.description}
-            </p>
-          </Card>
+            // Database is Single Source of Truth
+            const cardTitle =
+              locale === "en" && pillarDict?.title
+                ? pillarDict.title
+                : card.title;
+
+            const cardDesc =
+              locale === "en" && pillarDict?.description
+                ? pillarDict.description
+                : card.description;
+
+            const cardNum = card.number || pillarDict?.number;
+
+            return (
+              <Card key={card.id} className="p-8">
+                <div
+                  className={`font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-black ${colorStyle.badgeClass}`}
+                >
+                  {cardNum}
+                </div>
+                <h3 className="font-heading text-xl font-bold text-[#1e1b4b]">
+                  {cardTitle}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed font-semibold text-slate-600">
+                  {cardDesc}
+                </p>
+              </Card>
+            );
+          })}
         </div>
       </div>
     </section>

@@ -29,6 +29,24 @@ export const dictionaries = {
         voiceMembers: "Active in Voice Channels",
       },
       pillars: {
+        "pillar-1": {
+          number: "01",
+          title: "Squad Up & Play",
+          description:
+            "Never game alone. Find teammates for Valorant, Mobile Legends, Roblox, Minecraft, or casual party games in seconds.",
+        },
+        "pillar-2": {
+          number: "02",
+          title: "Watch & Chill Nights",
+          description:
+            "Cozy community movie streams, anime watch parties, music jamming sessions, and spontaneous voice lounge hangouts.",
+        },
+        "pillar-3": {
+          number: "03",
+          title: "Make Real Friends & Vibe",
+          description:
+            "A warm, welcoming, and wholesome environment to network, share passions, tell stories, and build genuine friendships.",
+        },
         p1: {
           number: "01",
           title: "Squad Up & Play",
@@ -105,6 +123,20 @@ export const dictionaries = {
       description:
         "Never miss a gaming tournament, movie watch party, meme drop, or community announcement. Join the conversation on all our verified channels.",
       visit: "VISIT →",
+      platforms: {
+        discord: {
+          name: "Discord Server",
+          handle: "Official Community Hub",
+        },
+        tiktok: {
+          name: "TikTok Official",
+          handle: "@bloom.unvrse",
+        },
+        instagram: {
+          name: "Instagram Official",
+          handle: "@bloom.unvrse",
+        },
+      },
     },
     footer: {
       description:
@@ -154,6 +186,24 @@ export const dictionaries = {
         voiceMembers: "Sedang Aktif di Voice",
       },
       pillars: {
+        "pillar-1": {
+          number: "01",
+          title: "Mabar Seru Bareng",
+          description:
+            "Nggak ada lagi main sendirian. Temukan rekan squad untuk Valorant, Mobile Legends, Roblox, Minecraft, atau game santai lainnya dalam hitungan detik.",
+        },
+        "pillar-2": {
+          number: "02",
+          title: "Nobar & Nongkrong Santai",
+          description:
+            "Nonton bareng film & anime favorit, dengerin musik bareng, hingga obrolan larut malam yang seru di voice lounge.",
+        },
+        "pillar-3": {
+          number: "03",
+          title: "Cari Teman & Relasi Baru",
+          description:
+            "Komunitas yang ramah, hangat, dan anti-toxic untuk berbagi hobi, bertukar cerita, dan menjalin persahabatan nyata.",
+        },
         p1: {
           number: "01",
           title: "Mabar Seru Bareng",
@@ -230,6 +280,20 @@ export const dictionaries = {
       description:
         "Jangan lewatkan info turnamen gaming, jadwal nobar, konten meme, dan pengumuman komunitas terbaru di semua akun resmi kami.",
       visit: "KUNJUNGI →",
+      platforms: {
+        discord: {
+          name: "Server Discord",
+          handle: "Pusat Komunitas Resmi",
+        },
+        tiktok: {
+          name: "TikTok Resmi",
+          handle: "@bloom.unvrse",
+        },
+        instagram: {
+          name: "Instagram Resmi",
+          handle: "@bloom.unvrse",
+        },
+      },
     },
     footer: {
       description:

@@ -14,6 +14,25 @@ export interface SubWebItem {
   isLive: boolean;
 }
 
+export interface SocialLinkItem {
+  id: string;
+  platform: string;
+  name: string;
+  url: string;
+  icon?: string | null;
+  handle?: string | null;
+  order: number;
+}
+
+export interface AboutCardItem {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+  color?: string;
+  order: number;
+}
+
 export interface HeroContent {
   title: string;
   subtitle: string;

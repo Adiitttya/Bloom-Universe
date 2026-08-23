@@ -10,36 +10,74 @@ import {
 } from "@/components/ui/SocialIcons";
 import { CloudDividerTop } from "@/components/ui/CloudDividers";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { type SocialLinkItem } from "@/lib/types";
 
-export function SocialLinks() {
-  const { dict } = useLanguage();
+interface SocialLinksProps {
+  links?: SocialLinkItem[];
+}
 
-  const socials = [
-    {
-      name: "Discord",
-      handle: "Official Community",
-      url: SOCIAL_LINKS.discord,
-      icon: DiscordIcon,
-      bg: "bg-[#5865F2]",
-      shadow: "shadow-[0_8px_0_#3c45a5]",
-    },
-    {
-      name: "TikTok",
-      handle: "@bloom.unvrse",
-      url: SOCIAL_LINKS.tiktok,
-      icon: TikTokIcon,
-      bg: "bg-[#010101]",
-      shadow: "shadow-[0_8px_0_#333333]",
-    },
-    {
-      name: "Instagram",
-      handle: "@bloom.unvrse",
-      url: SOCIAL_LINKS.instagram,
-      icon: InstagramIcon,
-      bg: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
-      shadow: "shadow-[0_8px_0_#961860]",
-    },
-  ];
+const DEFAULT_SOCIALS: SocialLinkItem[] = [
+  {
+    id: "social-discord",
+    platform: "discord",
+    name: "Discord Server",
+    url: SOCIAL_LINKS.discord,
+    handle: "Bloom Universe",
+    order: 0,
+  },
+  {
+    id: "social-tiktok",
+    platform: "tiktok",
+    name: "TikTok Official",
+    url: SOCIAL_LINKS.tiktok,
+    handle: "@bloom.unvrse",
+    order: 1,
+  },
+  {
+    id: "social-instagram",
+    platform: "instagram",
+    name: "Instagram Official",
+    url: SOCIAL_LINKS.instagram,
+    handle: "@bloom.unvrse",
+    order: 2,
+  },
+];
+
+const PLATFORM_STYLES: Record<
+  string,
+  {
+    icon: React.ComponentType<{ size?: number; className?: string }>;
+    bg: string;
+    shadow: string;
+  }
+> = {
+  discord: {
+    icon: DiscordIcon,
+    bg: "bg-[#5865F2]",
+    shadow: "shadow-[0_8px_0_#3c45a5]",
+  },
+  tiktok: {
+    icon: TikTokIcon,
+    bg: "bg-[#010101]",
+    shadow: "shadow-[0_8px_0_#333333]",
+  },
+  instagram: {
+    icon: InstagramIcon,
+    bg: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+    shadow: "shadow-[0_8px_0_#961860]",
+  },
+};
+
+function getPlatformKey(platform: string): "discord" | "tiktok" | "instagram" {
+  const p = (platform || "").toLowerCase();
+  if (p.includes("tiktok")) return "tiktok";
+  if (p.includes("insta")) return "instagram";
+  return "discord";
+}
+
+export function SocialLinks({ links }: SocialLinksProps) {
+  const { dict, locale } = useLanguage();
+  const displayLinks = links && links.length > 0 ? links : DEFAULT_SOCIALS;
 
   return (
     <section className="relative pt-6 pb-0 text-white sm:pt-10">
@@ -55,17 +93,34 @@ export function SocialLinks() {
           </p>
         </div>
 
-        {/* 3D Social Buttons Grid - 3 Columns */}
+        {/* 3D Social Buttons Grid */}
         <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 sm:mt-16 sm:grid-cols-3">
-          {socials.map((s) => {
-            const IconComponent = s.icon;
+          {displayLinks.map((s) => {
+            const platformKey = getPlatformKey(s.platform);
+            const style = PLATFORM_STYLES[platformKey];
+            const IconComponent = style.icon;
+
+            // Translated name and handle if available in dictionary
+            const platformDict = dict.socials.platforms?.[platformKey];
+
+            // Database is the Single Source of Truth
+            const name =
+              locale === "en" && platformDict?.name
+                ? platformDict.name
+                : s.name;
+
+            const handle =
+              locale === "en" && platformDict?.handle
+                ? platformDict.handle
+                : s.handle || s.name;
+
             return (
               <a
-                key={s.name}
+                key={s.id || s.platform}
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`group flex flex-col justify-between rounded-3xl border-4 border-white p-6 text-white transition-all duration-200 hover:-translate-y-1 active:translate-y-1 sm:p-8 ${s.bg} ${s.shadow}`}
+                className={`group flex flex-col justify-between rounded-3xl border-4 border-white p-6 text-white transition-all duration-200 hover:-translate-y-1 active:translate-y-1 sm:p-8 ${style.bg} ${style.shadow}`}
               >
                 <div>
                   <div className="flex items-center justify-between">
@@ -76,10 +131,10 @@ export function SocialLinks() {
                   </div>
 
                   <h3 className="font-heading mt-6 text-2xl font-black">
-                    {s.name}
+                    {name}
                   </h3>
                   <p className="font-heading mt-1 truncate text-sm font-bold text-white/80">
-                    {s.handle}
+                    {handle}
                   </p>
                 </div>
 

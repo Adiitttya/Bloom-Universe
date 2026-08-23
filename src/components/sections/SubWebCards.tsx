@@ -33,7 +33,7 @@ interface SubWebCardsProps {
 }
 
 export function SubWebCards({ items }: SubWebCardsProps) {
-  const { dict } = useLanguage();
+  const { dict, locale } = useLanguage();
   const displayItems = items && items.length > 0 ? items : SUB_WEBS;
 
   return (
@@ -59,13 +59,22 @@ export function SubWebCards({ items }: SubWebCardsProps) {
             const IconComponent =
               ICON_MAP[sub.icon as keyof typeof ICON_MAP] || ShoppingBag;
 
-            // Retrieve translated portal info if available
+            // Retrieve translated portal info if available in dictionary
             const portalDict =
-              dict.ecosystem.portals[
+              dict.ecosystem.portals?.[
                 sub.id as keyof typeof dict.ecosystem.portals
               ];
-            const title = portalDict?.title || sub.title;
-            const description = portalDict?.description || sub.description;
+
+            // Database is the Single Source of Truth
+            const title =
+              locale === "en" && portalDict?.title
+                ? portalDict.title
+                : sub.title;
+
+            const description =
+              locale === "en" && portalDict?.description
+                ? portalDict.description
+                : sub.description;
 
             return (
               <Card

@@ -87,7 +87,7 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const rawLocale = cookieStore.get("bloom_language")?.value;
   const initialLocale: Locale =
-    rawLocale === "id" || rawLocale === "en" ? rawLocale : "en";
+    rawLocale === "id" || rawLocale === "en" ? rawLocale : "id";
 
   return (
     <html

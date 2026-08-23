@@ -264,6 +264,55 @@ async function main() {
     },
   });
 
+  // 5. Seed AboutCards (3 Pillars / Values)
+  console.log("🌸 Seeding AboutCards...");
+  const aboutCards = [
+    {
+      id: "pillar-1",
+      number: "01",
+      title: "Squad Up & Play",
+      description:
+        "Never game alone. Find teammates for Valorant, Mobile Legends, Roblox, Minecraft, or casual party games in seconds.",
+      color: "blue",
+      order: 0,
+      isVisible: true,
+      createdAt: nowWIB,
+      updatedAt: nowWIB,
+    },
+    {
+      id: "pillar-2",
+      number: "02",
+      title: "Watch & Chill Nights",
+      description:
+        "Cozy community movie streams, anime watch parties, music jamming sessions, and spontaneous voice lounge hangouts.",
+      color: "yellow",
+      order: 1,
+      isVisible: true,
+      createdAt: nowWIB,
+      updatedAt: nowWIB,
+    },
+    {
+      id: "pillar-3",
+      number: "03",
+      title: "Make Real Friends & Vibe",
+      description:
+        "A warm, welcoming, and wholesome environment to network, share passions, tell stories, and build genuine friendships.",
+      color: "purple",
+      order: 2,
+      isVisible: true,
+      createdAt: nowWIB,
+      updatedAt: nowWIB,
+    },
+  ];
+
+  for (const card of aboutCards) {
+    await prisma.aboutCard.upsert({
+      where: { id: card.id },
+      create: card,
+      update: { ...card, updatedAt: nowWIB },
+    });
+  }
+
   console.log(
     "✅ Database seeding completed successfully with WIB timestamps!"
   );

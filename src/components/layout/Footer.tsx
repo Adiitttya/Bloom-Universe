@@ -12,10 +12,29 @@ import {
 import { Button } from "@/components/ui/Button";
 import { BloomImage } from "@/components/ui/BloomImage";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
+import { type SubWebItem, type SocialLinkItem } from "@/lib/types";
 
-export function Footer() {
+interface FooterProps {
+  subWebs?: SubWebItem[];
+  socialLinks?: SocialLinkItem[];
+}
+
+export function Footer({ subWebs, socialLinks }: FooterProps) {
   const currentYear = new Date().getFullYear();
-  const { dict } = useLanguage();
+  const { dict, locale } = useLanguage();
+
+  const displaySubWebs = subWebs && subWebs.length > 0 ? subWebs : SUB_WEBS;
+
+  // Find Discord, TikTok, Instagram URLs from dynamic socialLinks or fallback to constants
+  const discordUrl =
+    socialLinks?.find((s) => s.platform.toLowerCase().includes("discord"))
+      ?.url || SOCIAL_LINKS.discord;
+  const tiktokUrl =
+    socialLinks?.find((s) => s.platform.toLowerCase().includes("tiktok"))
+      ?.url || SOCIAL_LINKS.tiktok;
+  const instagramUrl =
+    socialLinks?.find((s) => s.platform.toLowerCase().includes("insta"))?.url ||
+    SOCIAL_LINKS.instagram;
 
   const navLinks = [
     { label: dict.nav.home, href: "/" },
@@ -52,11 +71,7 @@ export function Footer() {
 
             {/* Action Button: Join Discord Community */}
             <div className="pt-2">
-              <a
-                href={SOCIAL_LINKS.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={discordUrl} target="_blank" rel="noopener noreferrer">
                 <Button
                   variant="yellow"
                   size="sm"
@@ -95,12 +110,15 @@ export function Footer() {
               {dict.footer.hubs}
             </h4>
             <ul className="space-y-2 text-sm font-bold">
-              {SUB_WEBS.map((sub) => {
+              {displaySubWebs.map((sub) => {
                 const portalDict =
-                  dict.ecosystem.portals[
+                  dict.ecosystem.portals?.[
                     sub.id as keyof typeof dict.ecosystem.portals
                   ];
-                const title = portalDict?.title || sub.title;
+                const title =
+                  locale === "en" && portalDict?.title
+                    ? portalDict.title
+                    : sub.title;
 
                 return (
                   <li key={sub.id}>
@@ -132,7 +150,7 @@ export function Footer() {
 
           <div className="flex items-center gap-3">
             <a
-              href={SOCIAL_LINKS.discord}
+              href={discordUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Discord"
@@ -141,7 +159,7 @@ export function Footer() {
               <DiscordIcon size={18} />
             </a>
             <a
-              href={SOCIAL_LINKS.tiktok}
+              href={tiktokUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="TikTok"
@@ -150,7 +168,7 @@ export function Footer() {
               <TikTokIcon size={18} />
             </a>
             <a
-              href={SOCIAL_LINKS.instagram}
+              href={instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram"
