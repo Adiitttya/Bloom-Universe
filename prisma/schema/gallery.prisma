@@ -1,0 +1,11 @@
+model GalleryImage {
+  id        String    @id @default(cuid())
+  url       String
+  alt       String
+  caption   String?   @db.Text
+  order     Int       @default(0)
+  isVisible Boolean   @default(true)
+  createdAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
+  updatedAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
+  deletedAt DateTime?
+}

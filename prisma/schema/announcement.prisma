@@ -1,0 +1,11 @@
+model Announcement {
+  id        String    @id @default(cuid())
+  message   String    @db.Text
+  linkText  String?
+  linkUrl   String?
+  isActive  Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
+  updatedAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
+  deletedAt DateTime?
+}

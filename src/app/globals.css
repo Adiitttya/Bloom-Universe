@@ -1,26 +1,204 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Playful Cartoon Brand Colors */
+  --bloom-sky: #2baee2;
+  --bloom-sky-dark: #1b8ebc;
+  --bloom-sky-light: #e0f4fc;
+
+  --bloom-yellow: #ffc700;
+  --bloom-yellow-dark: #d9a300;
+  --bloom-yellow-light: #fff8d6;
+
+  --bloom-purple: #7952bd;
+  --bloom-purple-dark: #583594;
+  --bloom-purple-light: #f3ebff;
+
+  --bloom-coral: #ff5e62;
+  --bloom-coral-dark: #d93d41;
+
+  --background: #2baee2; /* Vibrant Cartoon Sky */
+  --foreground: #1e1b4b;
+  --surface: #ffffff;
+  --surface-cream: #fffdf5;
+  --border: #e0f2fe;
+
+  --font-heading:
+    var(--font-fredoka), ui-rounded, "Comic Sans MS", cursive, sans-serif;
+  --font-sans: var(--font-nunito), system-ui, -apple-system, sans-serif;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-sky-main: var(--bloom-sky);
+  --color-sky-dark: var(--bloom-sky-dark);
+  --color-sky-light: var(--bloom-sky-light);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-yellow-main: var(--bloom-yellow);
+  --color-yellow-dark: var(--bloom-yellow-dark);
+  --color-yellow-light: var(--bloom-yellow-light);
+
+  --color-purple-main: var(--bloom-purple);
+  --color-purple-dark: var(--bloom-purple-dark);
+  --color-purple-light: var(--bloom-purple-light);
+
+  --color-coral-main: var(--bloom-coral);
+  --color-coral-dark: var(--bloom-coral-dark);
+
+  --font-heading: var(--font-heading);
+  --font-sans: var(--font-sans);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--bloom-sky);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+/* 3D Cartoon Button Styles (Nintendo / Overcooked style) */
+.btn-3d-yellow {
+  background-color: #ffc700;
+  color: #452203;
+  box-shadow:
+    0 6px 0 #d9a300,
+    0 10px 15px rgba(0, 0, 0, 0.15);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-yellow:hover {
+  background-color: #ffd22e;
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 #d9a300,
+    0 12px 20px rgba(0, 0, 0, 0.2);
+}
+.btn-3d-yellow:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #d9a300;
+}
+
+.btn-3d-discord {
+  background-color: #5865f2;
+  color: #ffffff;
+  box-shadow:
+    0 6px 0 #3c45a5,
+    0 10px 15px rgba(88, 101, 242, 0.3);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-discord:hover {
+  background-color: #6b77f5;
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 #3c45a5,
+    0 12px 20px rgba(88, 101, 242, 0.4);
+}
+.btn-3d-discord:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #3c45a5;
+}
+
+.btn-3d-white {
+  background-color: #ffffff;
+  color: #1e1b4b;
+  box-shadow:
+    0 6px 0 #cbd5e1,
+    0 10px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-in-out;
+}
+.btn-3d-white:hover {
+  background-color: #f8fafc;
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 0 #cbd5e1,
+    0 12px 20px rgba(0, 0, 0, 0.15);
+}
+.btn-3d-white:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 #cbd5e1;
+}
+
+/* Playful 3D Cartoon Cards */
+.card-cartoon {
+  background: #ffffff;
+  border-radius: 2rem;
+  box-shadow:
+    0 10px 0 #d1e3ec,
+    0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  border: 4px solid #ffffff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.card-cartoon:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 14px 0 #d1e3ec,
+    0 25px 30px -5px rgba(0, 0, 0, 0.12);
+}
+
+.card-cartoon-yellow {
+  background: #fff8d6;
+  border-radius: 2rem;
+  box-shadow:
+    0 10px 0 #e6c860,
+    0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  border: 4px solid #ffffff;
+}
+
+.card-cartoon-purple {
+  background: #f3ebff;
+  border-radius: 2rem;
+  box-shadow:
+    0 10px 0 #c2a7f0,
+    0 20px 25px -5px rgba(0, 0, 0, 0.08);
+  border: 4px solid #ffffff;
+}
+
+/* Sticker Cutout Outline Effect for Mascots / Avatars */
+.sticker-mascot {
+  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.12));
+  border: 6px solid #ffffff;
+}
+
+/* Bubbly 3D Cartoon Text Shadows */
+.text-shadow-cartoon-yellow {
+  color: #ffc700;
+  text-shadow:
+    3px 3px 0 #ffffff,
+    -3px -3px 0 #ffffff,
+    3px -3px 0 #ffffff,
+    -3px 3px 0 #ffffff,
+    0 6px 0 #b38600,
+    0 8px 12px rgba(0, 0, 0, 0.3);
+}
+
+.text-shadow-cartoon-white {
+  color: #ffffff;
+  text-shadow:
+    0 4px 0 rgba(0, 0, 0, 0.15),
+    0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom playful scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #1b8ebc;
+}
+::-webkit-scrollbar-thumb {
+  background: #ffc700;
+  border-radius: 9999px;
+  border: 2px solid #1b8ebc;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #ffd22e;
 }

@@ -1,0 +1,14 @@
+model SubWebCard {
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  href        String
+  icon        String    // lucide icon identifier
+  badge       String?   // e.g. "Live", "Coming Soon"
+  isLive      Boolean   @default(true)
+  isVisible   Boolean   @default(true)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
+  updatedAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
+  deletedAt   DateTime?
+}

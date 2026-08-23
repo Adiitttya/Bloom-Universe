@@ -1,0 +1,12 @@
+model SiteContent {
+  id        String    @id @default(cuid())
+  section   String    // "hero", "about", etc.
+  key       String    // "title", "subtitle", etc.
+  value     String    @db.Text
+  updatedBy String?   // Discord user ID
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@unique([section, key])
+}

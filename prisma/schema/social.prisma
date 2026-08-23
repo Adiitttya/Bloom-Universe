@@ -1,0 +1,13 @@
+model SocialLink {
+  id          String    @id @default(cuid())
+  platform    String    // "discord", "tiktok", "instagram", "youtube", "twitter", etc.
+  name        String    // "Discord Server", "TikTok Official", etc.
+  url         String
+  icon        String?   // "DiscordIcon", "TikTokIcon", "InstagramIcon", or lucide
+  handle      String?   // "@bloom.unvrse"
+  isVisible   Boolean   @default(true)
+  order       Int       @default(0)
+  createdAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
+  updatedAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
+  deletedAt   DateTime?
+}
