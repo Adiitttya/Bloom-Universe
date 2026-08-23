@@ -178,64 +178,22 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
     async session({ session, token }) {
       if (session.user) {
-        const discordId = token.discordId as string | undefined;
-
-        let isInGuild = Boolean(token.isInGuild);
-        let guildRoles = (token.guildRoles as string[]) || [];
-        let highestRole =
-          (token.highestRole as HighestRoleInfo | null | undefined) || null;
-        let otherRolesCount =
-          typeof token.otherRolesCount === "number" ? token.otherRolesCount : 0;
-        let role =
-          (token.role as "GUEST" | "MEMBER" | "ADMIN" | "SUPER_ADMIN") ||
-          "GUEST";
-        let isAdmin = Boolean(token.isAdmin);
-
-        // Fetch fresh member roles & highest role live from Discord
-        if (discordId) {
-          try {
-            const freshMember = await fetchDiscordGuildMember(discordId);
-            isInGuild = freshMember.isInGuild;
-            guildRoles = freshMember.roles;
-
-            if (isInGuild) {
-              highestRole = await getMemberHighestRole(freshMember.roles);
-              otherRolesCount = Math.max(0, freshMember.roles.length - 1);
-
-              const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
-                .split(",")
-                .map((id) => id.trim())
-                .filter(Boolean);
-
-              const hasAdminRole = freshMember.roles.some((roleId) =>
-                adminRoleIds.includes(roleId)
-              );
-
-              isAdmin = hasAdminRole;
-              role = hasAdminRole ? Role.ADMIN : Role.MEMBER;
-            } else {
-              highestRole = null;
-              otherRolesCount = 0;
-              isAdmin = false;
-              role = Role.GUEST;
-            }
-          } catch {
-            // Keep existing token values if network fails
-          }
-        }
-
         session.user.id = (token.id as string) || (token.sub as string) || "";
-        session.user.discordId = discordId;
+        session.user.discordId = token.discordId as string | undefined;
         session.user.username = token.username as string | null | undefined;
         session.user.displayName = token.displayName as
           string | null | undefined;
         session.user.nickname = token.nickname as string | null | undefined;
-        session.user.isInGuild = isInGuild;
-        session.user.role = role;
-        session.user.isAdmin = isAdmin;
-        session.user.guildRoles = guildRoles;
-        session.user.highestRole = highestRole;
-        session.user.otherRolesCount = otherRolesCount;
+        session.user.isInGuild = Boolean(token.isInGuild);
+        session.user.role =
+          (token.role as "GUEST" | "MEMBER" | "ADMIN" | "SUPER_ADMIN") ||
+          "GUEST";
+        session.user.isAdmin = Boolean(token.isAdmin);
+        session.user.guildRoles = (token.guildRoles as string[]) || [];
+        session.user.highestRole =
+          (token.highestRole as HighestRoleInfo | null | undefined) || null;
+        session.user.otherRolesCount =
+          typeof token.otherRolesCount === "number" ? token.otherRolesCount : 0;
       }
       return session;
     },

@@ -83,8 +83,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  const cookieStore = await cookies();
+  const [session, cookieStore] = await Promise.all([auth(), cookies()]);
   const rawLocale = cookieStore.get("bloom_language")?.value;
   const initialLocale: Locale =
     rawLocale === "id" || rawLocale === "en" ? rawLocale : "id";

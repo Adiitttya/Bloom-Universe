@@ -88,28 +88,28 @@ export function HeroPlayfulDecorations() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Top Left Sparkle */}
-      <div className="animate-float-gentle absolute top-6 left-6 hidden lg:block opacity-75">
-        <SparkleIcon size={28} color="#ffc700" />
+      {/* Top Left Sparkle (Visible on Mobile & Desktop) */}
+      <div className="animate-float-gentle absolute top-3 left-3 opacity-75 sm:top-6 sm:left-6 sm:opacity-85">
+        <SparkleIcon className="h-5 w-5 sm:h-7 sm:w-7" size={28} color="#ffc700" />
       </div>
 
-      {/* Top Center-Left Star */}
+      {/* Top Center-Left Star (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute top-20 left-[22%] hidden md:block opacity-60"
+        className="animate-float-gentle absolute top-14 left-[6%] opacity-60 sm:top-20 sm:left-[22%] sm:opacity-70"
         style={{ animationDelay: "1s" }}
       >
-        <CartoonStar size={22} color="#ffffff" />
+        <CartoonStar className="h-4 w-4 sm:h-5 sm:w-5" size={22} color="#ffffff" />
       </div>
 
-      {/* Left Bottom Mini Cloud */}
+      {/* Left Bottom Mini Cloud (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute bottom-28 left-[4%] hidden sm:block"
+        className="animate-float-gentle absolute bottom-12 -left-2 opacity-70 sm:bottom-28 sm:left-[4%] sm:opacity-100"
         style={{ animationDelay: "2s" }}
       >
-        <FluffyCloudlet size={85} opacity={0.35} />
+        <FluffyCloudlet className="w-14 sm:w-20 lg:w-24" size={85} opacity={0.3} />
       </div>
 
-      {/* Center Top Floating Cloudlet */}
+      {/* Center Top Floating Cloudlet (Desktop only for depth) */}
       <div
         className="animate-float-gentle absolute top-4 left-[48%] hidden xl:block"
         style={{ animationDelay: "1.5s" }}
@@ -117,28 +117,28 @@ export function HeroPlayfulDecorations() {
         <FluffyCloudlet size={70} opacity={0.25} />
       </div>
 
-      {/* Top Right Cute Sparkle near Mascot */}
+      {/* Top Right Cute Sparkle (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute top-12 right-[8%] hidden sm:block opacity-85"
+        className="animate-float-gentle absolute top-3 right-3 opacity-85 sm:top-12 sm:right-[8%]"
         style={{ animationDelay: "0.8s" }}
       >
-        <SparkleIcon size={34} color="#ffc700" />
+        <SparkleIcon className="h-6 w-6 sm:h-8 sm:w-8" size={34} color="#ffc700" />
       </div>
 
-      {/* Right Middle Star */}
+      {/* Right Middle Star (Visible on Tablet & Desktop) */}
       <div
-        className="animate-float-gentle absolute top-1/2 right-[3%] hidden lg:block opacity-70"
+        className="animate-float-gentle absolute top-1/2 right-[3%] hidden sm:block opacity-70"
         style={{ animationDelay: "2.5s" }}
       >
         <CartoonStar size={26} color="#ffffff" />
       </div>
 
-      {/* Right Bottom Cloud */}
+      {/* Right Bottom Cloud (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute bottom-24 right-[12%] hidden md:block"
+        className="animate-float-gentle absolute bottom-10 -right-2 opacity-65 sm:bottom-24 sm:right-[12%] sm:opacity-100"
         style={{ animationDelay: "3s" }}
       >
-        <FluffyCloudlet size={95} opacity={0.3} />
+        <FluffyCloudlet className="w-16 sm:w-22 lg:w-24" size={95} opacity={0.28} />
       </div>
     </div>
   );
@@ -151,20 +151,20 @@ export function SkySectionDecorations() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Top Left Star */}
-      <div className="animate-float-gentle absolute top-8 left-[6%] hidden sm:block opacity-65">
-        <CartoonStar size={24} color="#ffc700" />
+      {/* Top Left Star (Visible on Mobile & Desktop) */}
+      <div className="animate-float-gentle absolute top-3 left-3 opacity-70 sm:top-8 sm:left-[6%]">
+        <CartoonStar className="h-4 w-4 sm:h-6 sm:w-6" size={24} color="#ffc700" />
       </div>
 
-      {/* Top Right Sparkle */}
+      {/* Top Right Sparkle (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute top-12 right-[8%] hidden md:block opacity-80"
+        className="animate-float-gentle absolute top-4 right-3 opacity-80 sm:top-12 sm:right-[8%]"
         style={{ animationDelay: "1.2s" }}
       >
-        <SparkleIcon size={30} color="#ffc700" />
+        <SparkleIcon className="h-5 w-5 sm:h-7 sm:w-7" size={30} color="#ffc700" />
       </div>
 
-      {/* Middle Floating Cloud */}
+      {/* Middle Floating Cloud (Desktop only) */}
       <div
         className="animate-float-gentle absolute top-1/3 left-[2%] hidden xl:block"
         style={{ animationDelay: "2.2s" }}
@@ -172,20 +172,20 @@ export function SkySectionDecorations() {
         <FluffyCloudlet size={75} opacity={0.25} />
       </div>
 
-      {/* Bottom Right Floating Cloud */}
+      {/* Bottom Right Floating Cloud (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute bottom-28 right-[3%] hidden lg:block"
+        className="animate-float-gentle absolute bottom-12 -right-3 opacity-60 sm:bottom-28 sm:right-[3%] sm:opacity-100"
         style={{ animationDelay: "1.7s" }}
       >
-        <FluffyCloudlet size={90} opacity={0.3} />
+        <FluffyCloudlet className="w-16 sm:w-20 lg:w-24" size={90} opacity={0.28} />
       </div>
 
-      {/* Floating Sparkle Bottom Left */}
+      {/* Floating Sparkle Bottom Left (Visible on Mobile & Desktop) */}
       <div
-        className="animate-float-gentle absolute bottom-20 left-[8%] hidden sm:block opacity-75"
+        className="animate-float-gentle absolute bottom-6 left-3 opacity-75 sm:bottom-20 sm:left-[8%]"
         style={{ animationDelay: "0.5s" }}
       >
-        <SparkleIcon size={22} color="#ffffff" />
+        <SparkleIcon className="h-4 w-4 sm:h-5 sm:w-5" size={22} color="#ffffff" />
       </div>
     </div>
   );

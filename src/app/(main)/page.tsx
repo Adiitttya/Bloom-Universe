@@ -15,9 +15,8 @@ import {
   type AboutContent,
 } from "@/lib/types";
 
-// Force dynamic execution on every request to immediately reflect database updates
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Enable Incremental Static Regeneration (ISR) with 60s revalidation for blazing fast TTFB & instant LCP
+export const revalidate = 60;
 
 export default async function HomePage() {
   let galleryImages: GalleryItem[] = [];
@@ -27,13 +26,47 @@ export default async function HomePage() {
   let heroContent: Partial<HeroContent> | undefined = undefined;
   let aboutContent: Partial<AboutContent> | undefined = undefined;
 
-  // Fetch live Discord stats directly on the server to prevent initial dummy jump/flash
-  const discordStats = await fetchDiscordGuildStats();
-
   try {
-    // 1. Fetch site content (Hero & About custom text if configured in DB)
-    const siteContents = await db.siteContent.findMany();
-    if (siteContents.length > 0) {
+    // Execute all database queries & discord stats concurrently in parallel
+    const [
+      discordStats,
+      siteContents,
+      dbImages,
+      dbSubWebs,
+      dbSocials,
+      dbAboutCards,
+    ] = await Promise.all([
+      fetchDiscordGuildStats(),
+      db.siteContent.findMany().catch(() => []),
+      db.galleryImage
+        .findMany({
+          where: { isVisible: true },
+          orderBy: { order: "asc" },
+          take: 6,
+        })
+        .catch(() => []),
+      db.subWebCard
+        .findMany({
+          where: { isVisible: true },
+          orderBy: { order: "asc" },
+        })
+        .catch(() => []),
+      db.socialLink
+        .findMany({
+          where: { isVisible: true },
+          orderBy: { order: "asc" },
+        })
+        .catch(() => []),
+      db.aboutCard
+        .findMany({
+          where: { isVisible: true },
+          orderBy: { order: "asc" },
+        })
+        .catch(() => []),
+    ]);
+
+    // 1. Process site content
+    if (siteContents && siteContents.length > 0) {
       const heroRecords = siteContents.filter((c) => c.section === "hero");
       const aboutRecords = siteContents.filter((c) => c.section === "about");
 
@@ -61,13 +94,8 @@ export default async function HomePage() {
       }
     }
 
-    // 2. Fetch gallery images
-    const dbImages = await db.galleryImage.findMany({
-      where: { isVisible: true },
-      orderBy: { order: "asc" },
-      take: 6,
-    });
-    if (dbImages.length > 0) {
+    // 2. Process gallery images
+    if (dbImages && dbImages.length > 0) {
       galleryImages = dbImages.map((img) => ({
         id: img.id,
         url: img.url,
@@ -76,12 +104,8 @@ export default async function HomePage() {
       }));
     }
 
-    // 3. Fetch subweb cards
-    const dbSubWebs = await db.subWebCard.findMany({
-      where: { isVisible: true },
-      orderBy: { order: "asc" },
-    });
-    if (dbSubWebs.length > 0) {
+    // 3. Process subwebs
+    if (dbSubWebs && dbSubWebs.length > 0) {
       subWebs = dbSubWebs.map((sub) => ({
         id: sub.id,
         title: sub.title,
@@ -92,12 +116,8 @@ export default async function HomePage() {
       }));
     }
 
-    // 4. Fetch social links
-    const dbSocials = await db.socialLink.findMany({
-      where: { isVisible: true },
-      orderBy: { order: "asc" },
-    });
-    if (dbSocials.length > 0) {
+    // 4. Process social links
+    if (dbSocials && dbSocials.length > 0) {
       socialLinks = dbSocials.map((s) => ({
         id: s.id,
         platform: s.platform,
@@ -109,12 +129,8 @@ export default async function HomePage() {
       }));
     }
 
-    // 5. Fetch about pillar cards
-    const dbAboutCards = await db.aboutCard.findMany({
-      where: { isVisible: true },
-      orderBy: { order: "asc" },
-    });
-    if (dbAboutCards.length > 0) {
+    // 5. Process about cards
+    if (dbAboutCards && dbAboutCards.length > 0) {
       aboutCards = dbAboutCards.map((c) => ({
         id: c.id,
         number: c.number,
@@ -124,19 +140,29 @@ export default async function HomePage() {
         order: c.order,
       }));
     }
+
+    return (
+      <>
+        {/* Hero & About intentionally use the i18n Dictionary for full multi-language translation */}
+        <HeroSection />
+        <ServerStats initialStats={discordStats} />
+        <AboutSection />
+        <GallerySection images={galleryImages} />
+        <SubWebCards items={subWebs.length > 0 ? subWebs : undefined} />
+        <SocialLinks links={socialLinks.length > 0 ? socialLinks : undefined} />
+      </>
+    );
   } catch {
     // Graceful fallback to default values
+    return (
+      <>
+        <HeroSection />
+        <ServerStats />
+        <AboutSection />
+        <GallerySection images={galleryImages} />
+        <SubWebCards />
+        <SocialLinks />
+      </>
+    );
   }
-
-  return (
-    <>
-      {/* Hero & About intentionally use the i18n Dictionary for full multi-language translation */}
-      <HeroSection />
-      <ServerStats initialStats={discordStats} />
-      <AboutSection />
-      <GallerySection images={galleryImages} />
-      <SubWebCards items={subWebs.length > 0 ? subWebs : undefined} />
-      <SocialLinks links={socialLinks.length > 0 ? socialLinks : undefined} />
-    </>
-  );
 }

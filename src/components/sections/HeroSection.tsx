@@ -29,7 +29,7 @@ export function HeroSection({ content }: HeroSectionProps) {
 
   // Reusable Mascot Sticker Component with Cartoon Lazy Loading & Compression
   const MascotComponent = (
-    <ScrollReveal animation="pop-in" delay={150} className="group relative">
+    <ScrollReveal animation="pop-in" delay={150} initialVisible={true} className="group relative">
       {/* Floating container holding BOTH the Mascot Logo and the BLOOMUN! Badge so they float in 100% sync */}
       <div className="animate-mascot-float relative inline-block">
         {/* Cute Floating Mascot Card */}
@@ -63,19 +63,19 @@ export function HeroSection({ content }: HeroSectionProps) {
         <div className="hidden lg:grid lg:grid-cols-12 lg:items-center lg:gap-10">
           {/* Left Column: Title -> Description -> Buttons */}
           <div className="flex flex-col items-start text-left lg:col-span-7">
-            <ScrollReveal animation="fade-up" delay={0}>
+            <ScrollReveal animation="fade-up" delay={0} initialVisible={true}>
               <h1 className="font-heading text-shadow-cartoon-white text-6xl leading-[1.1] font-black tracking-tight xl:text-7xl">
                 {title}
               </h1>
             </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={120}>
+            <ScrollReveal animation="fade-up" delay={120} initialVisible={true}>
               <p className="mt-6 max-w-2xl text-lg leading-relaxed font-bold text-white xl:text-xl">
                 {subtitle}
               </p>
             </ScrollReveal>
 
-            <ScrollReveal animation="fade-up" delay={240}>
+            <ScrollReveal animation="fade-up" delay={240} initialVisible={true}>
               <div className="mt-8 flex items-center gap-4">
                 <a href={primaryCtaUrl} target="_blank" rel="noopener noreferrer">
                   <Button variant="yellow" size="lg" className="gap-3">
@@ -104,7 +104,7 @@ export function HeroSection({ content }: HeroSectionProps) {
         {/* Mobile & Tablet Layout (< lg screens: Title -> Logo -> Description -> Buttons) */}
         <div className="flex flex-col items-center text-center lg:hidden">
           {/* 1. Title */}
-          <ScrollReveal animation="fade-up" delay={0} className="w-full">
+          <ScrollReveal animation="fade-up" delay={0} initialVisible={true} className="w-full">
             <h1 className="font-heading text-shadow-cartoon-white text-3xl leading-[1.15] font-black tracking-tight sm:text-5xl md:text-6xl">
               {title}
             </h1>
@@ -116,14 +116,14 @@ export function HeroSection({ content }: HeroSectionProps) {
           </div>
 
           {/* 3. Description / Subtitle */}
-          <ScrollReveal animation="fade-up" delay={120} className="w-full">
+          <ScrollReveal animation="fade-up" delay={120} initialVisible={true} className="w-full">
             <p className="mx-auto max-w-xl text-sm leading-relaxed font-bold text-white sm:text-base md:text-lg">
               {subtitle}
             </p>
           </ScrollReveal>
 
           {/* 4. Action Buttons */}
-          <ScrollReveal animation="fade-up" delay={220} className="w-full">
+          <ScrollReveal animation="fade-up" delay={220} initialVisible={true} className="w-full">
             <div className="mt-6 flex w-full flex-col items-center justify-center gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:gap-4">
               <a
                 href={primaryCtaUrl}

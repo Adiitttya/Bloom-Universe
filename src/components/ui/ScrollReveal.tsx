@@ -20,6 +20,7 @@ export interface ScrollRevealProps extends React.HTMLAttributes<HTMLDivElement> 
   once?: boolean;
   className?: string;
   as?: React.ElementType;
+  initialVisible?: boolean;
 }
 
 const ANIMATION_INITIAL_STYLES: Record<AnimationType, React.CSSProperties> = {
@@ -69,12 +70,14 @@ export function ScrollReveal({
   className = "",
   style,
   as: Component = "div",
+  initialVisible = false,
   ...rest
 }: ScrollRevealProps) {
-  const [isVisible, setIsVisible] = React.useState(false);
+  const [isVisible, setIsVisible] = React.useState(initialVisible);
   const elementRef = React.useRef<HTMLElement | null>(null);
 
   React.useEffect(() => {
+    if (initialVisible && once) return;
     const node = elementRef.current;
     if (!node) return;
 

@@ -38,12 +38,20 @@ export const DEFAULT_DISCORD_STATS: DiscordServerStats = {
   isLive: false,
 };
 
+let cachedDiscordStats: DiscordServerStats | null = null;
+let cachedDiscordStatsExpiry = 0;
+
 export function intColorToHex(color: number, fallback = "#2baee2"): string {
   if (!color || color === 0) return fallback;
   return `#${color.toString(16).padStart(6, "0")}`;
 }
 
 export async function fetchDiscordGuildStats(): Promise<DiscordServerStats> {
+  const now = Date.now();
+  if (cachedDiscordStats && now < cachedDiscordStatsExpiry) {
+    return cachedDiscordStats;
+  }
+
   const guildId = process.env.DISCORD_GUILD_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
 
@@ -58,13 +66,13 @@ export async function fetchDiscordGuildStats(): Promise<DiscordServerStats> {
         headers: {
           Authorization: `Bot ${botToken}`,
         },
-        signal: AbortSignal.timeout(4000),
-        next: { revalidate: 30 },
+        signal: AbortSignal.timeout(2500),
+        next: { revalidate: 60 },
       }
     );
 
     if (!guildRes.ok) {
-      return DEFAULT_DISCORD_STATS;
+      return cachedDiscordStats || DEFAULT_DISCORD_STATS;
     }
 
     const guildData = await guildRes.json();
@@ -77,8 +85,8 @@ export async function fetchDiscordGuildStats(): Promise<DiscordServerStats> {
         `https://discord.com/api/v10/guilds/${guildId}/widget.json`,
         {
           headers: { Authorization: `Bot ${botToken}` },
-          signal: AbortSignal.timeout(3000),
-          next: { revalidate: 30 },
+          signal: AbortSignal.timeout(1500),
+          next: { revalidate: 60 },
         }
       );
       if (widgetRes.ok) {
@@ -93,7 +101,7 @@ export async function fetchDiscordGuildStats(): Promise<DiscordServerStats> {
       voiceCount = 0;
     }
 
-    return {
+    const result: DiscordServerStats = {
       totalMembers,
       onlineMembers,
       voiceMembers:
@@ -103,9 +111,14 @@ export async function fetchDiscordGuildStats(): Promise<DiscordServerStats> {
       guildName: guildData.name || "Bloom Universe",
       isLive: true,
     };
+
+    cachedDiscordStats = result;
+    cachedDiscordStatsExpiry = now + 60000; // 60 seconds memory cache
+
+    return result;
   } catch (error) {
     console.error("Error fetching Discord stats:", error);
-    return DEFAULT_DISCORD_STATS;
+    return cachedDiscordStats || DEFAULT_DISCORD_STATS;
   }
 }
 
@@ -167,10 +180,18 @@ export async function fetchDiscordGuildMember(
   }
 }
 
+let cachedGuildRoles: DiscordGuildRole[] | null = null;
+let cachedGuildRolesExpiry = 0;
+
 /**
- * Fetch all guild roles from Discord (fresh)
+ * Fetch all guild roles from Discord (with 5-minute memory cache)
  */
 export async function fetchDiscordGuildRoles(): Promise<DiscordGuildRole[]> {
+  const now = Date.now();
+  if (cachedGuildRoles && now < cachedGuildRolesExpiry) {
+    return cachedGuildRoles;
+  }
+
   const guildId = process.env.DISCORD_GUILD_ID;
   const botToken = process.env.DISCORD_BOT_TOKEN;
 
@@ -183,17 +204,22 @@ export async function fetchDiscordGuildRoles(): Promise<DiscordGuildRole[]> {
         headers: {
           Authorization: `Bot ${botToken}`,
         },
-        signal: AbortSignal.timeout(3500),
-        cache: "no-store",
+        signal: AbortSignal.timeout(3000),
+        next: { revalidate: 300 },
       }
     );
 
-    if (!res.ok) return [];
+    if (!res.ok) return cachedGuildRoles || [];
     const roles: DiscordGuildRole[] = await res.json();
-    return Array.isArray(roles) ? roles : [];
+    if (Array.isArray(roles)) {
+      cachedGuildRoles = roles;
+      cachedGuildRolesExpiry = now + 300000; // 5 minutes cache
+      return roles;
+    }
+    return cachedGuildRoles || [];
   } catch (error) {
     console.error("Error fetching Discord guild roles:", error);
-    return [];
+    return cachedGuildRoles || [];
   }
 }
 

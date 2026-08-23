@@ -209,25 +209,41 @@ h6 {
     transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
   }
   20% {
-    transform: translate3d(6px, -12px, 0) rotate(2.5deg) scale(1.02);
+    transform: translate3d(5px, -10px, 0) rotate(2deg) scale(1.015);
   }
   40% {
-    transform: translate3d(-6px, -18px, 0) rotate(-1.8deg) scale(1.01);
+    transform: translate3d(-5px, -15px, 0) rotate(-1.5deg) scale(1.01);
   }
   65% {
-    transform: translate3d(-9px, -8px, 0) rotate(-2.8deg) scale(0.99);
+    transform: translate3d(-7px, -7px, 0) rotate(-2deg) scale(0.99);
   }
   82% {
-    transform: translate3d(5px, -15px, 0) rotate(1.8deg) scale(1.015);
+    transform: translate3d(4px, -12px, 0) rotate(1.5deg) scale(1.01);
   }
   100% {
     transform: translate3d(0, 0, 0) rotate(0deg) scale(1);
   }
 }
 
+@keyframes float-mascot-mobile {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -5px, 0) rotate(0.8deg);
+  }
+}
+
 .animate-mascot-float {
-  animation: float-mascot-organic 6.5s ease-in-out infinite;
+  animation: float-mascot-mobile 4s ease-in-out infinite;
   will-change: transform;
+}
+
+@media (min-width: 640px) {
+  .animate-mascot-float {
+    animation: float-mascot-organic 6.5s ease-in-out infinite;
+  }
 }
 
 @keyframes float-gentle {

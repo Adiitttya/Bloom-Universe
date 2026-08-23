@@ -20,7 +20,7 @@ export function BloomImage({
   priority = false,
   ...props
 }: BloomImageProps) {
-  const [isLoading, setIsLoading] = React.useState(true);
+  const [isLoading, setIsLoading] = React.useState(!priority);
 
   return (
     <div
@@ -49,7 +49,7 @@ export function BloomImage({
         priority={priority}
         onLoad={() => setIsLoading(false)}
         className={cn(
-          "transition-all duration-500 ease-out",
+          "transition-all duration-300 ease-out",
           isLoading
             ? "scale-102 opacity-0 blur-xs"
             : "scale-100 opacity-100 blur-none",
