@@ -5,8 +5,8 @@ import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { db } from "@/lib/db";
 import { type SubWebItem, type SocialLinkItem } from "@/lib/types";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+// Enable Incremental Static Regeneration (ISR) with 60s revalidation for high performance & instant response
+export const revalidate = 60;
 
 export default async function MainLayout({
   children,

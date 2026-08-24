@@ -6,3 +6,37 @@ saya ingin kedepannya web ini bisa di scale dengan mudah.
 oke, sekarang di landingpage urtama web saya ingin menambahkan fitur bahasa, pada navbar saya ingin ada pilihan bahasa seperti en / id, en untuk englis lang, dan id untuk bahasa indonesia. tersingkron, baik web utama, login page, socil anntinya (kecuali admin). jadi semua text akan berubah bahsanya (kecuali text yang memang tidak harus di translate seperti photobooth, dll) untuk translate tidak serta merta translate bahasa, namun tetap di copywrite dengan profesional agar nanti bahasnaya tidak kaku dan aneh.
 
 update translate ini hanya mengedit bagian text, tidak mengubah element dll.
+
+Listed directory web-bloom
+Listed directory %28admin%29
+Listed directory docs
+Listed directory admin
+Listed directory prisma
+Listed directory schema
+Viewed info.md:1-67
+Viewed user.prisma:1-113
+Viewed subweb.prisma:1-17
+
+Sudah cukup konteks. Sekarang saya buat dokumennya.
+
+Ran command: `New-Item -ItemType File -Path "c:\Users\Aditya\OneDrive\Dokumen\Project\web-bloom\docs\14-multi-feature-ecosystem.md" -Force | Out-Null; Write-Host "Created"`
+Edited 14-multi-feature-ecosystem.md
+
+Dokumen sudah dibuat di [`docs/14-multi-feature-ecosystem.md`](file:///c:/Users/Aditya/OneDrive/Dokumen/Project/web-bloom/docs/14-multi-feature-ecosystem.md).
+
+Berikut ringkasan isi dokumen yang dibuat:
+
+| Section                         | Isi                                                                        |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| **1. Konsep & Visi**            | Penjelasan bahwa Bloomun jadi super app terpadu, tabel roadmap fitur       |
+| **2. Arsitektur**               | Feature-Based Modular — prinsip isolasi dan aturan utama                   |
+| **3. Struktur Folder**          | Perbandingan before/after, folder `src/features/` baru                     |
+| **4. Pola Implementasi**        | Step-by-step template untuk setiap fitur baru (DB → Feature → App → Admin) |
+| **5. Konvensi Database**        | Prefix model Prisma per fitur, model shared yang tidak perlu diduplikat    |
+| **6. Auth & Role**              | Tidak ada perubahan, cara pakai `guildRoles` jika perlu kontrol lebih      |
+| **7. Admin Dashboard**          | Cara memperluas sidebar tanpa mengganggu yang sudah ada                    |
+| **8. Env Variables**            | Satu `.env.local`, diberi komentar per fitur                               |
+| **9. Urutan Pengerjaan**        | Checklist 7 langkah untuk tiap fitur baru                                  |
+| **10–11. Larangan & Checklist** | Hal yang dilarang + checklist final per fitur                              |
+
+Dokumen ini sudah cukup untuk dipegang programmer lain atau AI model yang lebih murah untuk langsung mulai implement fitur baru tanpa perlu tanya-tanya soal arsitektur dasar.

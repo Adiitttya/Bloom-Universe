@@ -57,14 +57,14 @@ export function LoginModal() {
         className="animate-in zoom-in-95 relative w-full max-w-md overflow-hidden rounded-[2.5rem] border-4 border-white bg-white p-7 text-center shadow-[0_20px_50px_rgba(0,0,0,0.3)] transition-all duration-300 sm:p-9"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Cute 3D Close Button */}
+        {/* Consistent Rounded-XL Close Button */}
         <button
           type="button"
           onClick={closeLoginModal}
-          aria-label="Close"
-          className="btn-3d-yellow absolute top-4 right-4 flex h-10 w-10 cursor-pointer items-center justify-center rounded-full sm:top-5 sm:right-5"
+          aria-label="Tutup"
+          className="absolute top-4 right-4 flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 active:scale-95 sm:top-6 sm:right-6"
         >
-          <X className="h-5 w-5 text-[#452203]" />
+          <X className="h-4 w-4" />
         </button>
 
         {/* 3D Headline */}

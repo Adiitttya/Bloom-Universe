@@ -11,4 +11,6 @@ model SubWebCard {
   createdAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
   updatedAt   DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
   deletedAt   DateTime?
+
+  @@index([isVisible, order])
 }

@@ -205,7 +205,7 @@ export async function fetchDiscordGuildRoles(): Promise<DiscordGuildRole[]> {
           Authorization: `Bot ${botToken}`,
         },
         signal: AbortSignal.timeout(3000),
-        next: { revalidate: 300 },
+        cache: "no-store",
       }
     );
 
@@ -213,7 +213,7 @@ export async function fetchDiscordGuildRoles(): Promise<DiscordGuildRole[]> {
     const roles: DiscordGuildRole[] = await res.json();
     if (Array.isArray(roles)) {
       cachedGuildRoles = roles;
-      cachedGuildRolesExpiry = now + 300000; // 5 minutes cache
+      cachedGuildRolesExpiry = now + 30000; // 30 seconds cache
       return roles;
     }
     return cachedGuildRoles || [];

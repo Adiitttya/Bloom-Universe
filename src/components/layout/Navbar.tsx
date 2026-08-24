@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, LogOut, UserX } from "lucide-react";
+import { Menu, X, LogOut, UserX, RotateCw, Shield } from "lucide-react";
 import { SITE_CONFIG } from "@/lib/constants";
 import { Button } from "@/components/ui/Button";
 import { LanguageToggle } from "@/components/ui/LanguageToggle";
@@ -11,17 +11,32 @@ import { BloomImage } from "@/components/ui/BloomImage";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useLoginModal } from "@/lib/auth/AuthModalContext";
 import { useSession, signOut } from "next-auth/react";
+import { ConfirmModal } from "@/components/ui/ConfirmModal";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+  const [isSyncing, setIsSyncing] = React.useState(false);
+  const [showLogoutModal, setShowLogoutModal] = React.useState(false);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
 
   const { dict, locale } = useLanguage();
   const { openLoginModal } = useLoginModal();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
 
   const user = session?.user;
+
+  const handleSyncRoles = async () => {
+    setIsSyncing(true);
+    try {
+      await update();
+    } catch (err) {
+      console.error("Failed to sync roles:", err);
+    } finally {
+      setIsSyncing(false);
+    }
+  };
 
   // Close dropdown on click outside
   React.useEffect(() => {
@@ -221,10 +236,39 @@ export function Navbar() {
                       </div>
 
                       {/* Status Role Badge with Real Discord Colors */}
-                      <div className="mt-2.5 flex items-center">
+                      <div className="mt-2.5 flex items-center justify-between gap-1">
                         {renderRoleBadge()}
+
+                        {/* Quick Sync Button */}
+                        <button
+                          type="button"
+                          onClick={handleSyncRoles}
+                          disabled={isSyncing}
+                          title="Refresh status role Discord"
+                          className="flex h-6 w-6 cursor-pointer items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-[#2baee2]"
+                        >
+                          <RotateCw
+                            className={`h-3.5 w-3.5 ${
+                              isSyncing ? "animate-spin text-[#2baee2]" : ""
+                            }`}
+                          />
+                        </button>
                       </div>
                     </div>
+
+                    {/* Admin Dashboard shortcut if user is admin */}
+                    {user.isAdmin && (
+                      <div className="border-b border-slate-100 py-2">
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsDropdownOpen(false)}
+                          className="font-heading flex items-center gap-2 rounded-2xl bg-[#e0f4fc] px-3 py-2 text-xs font-black text-[#1b8ebc] transition hover:bg-[#d0effb]"
+                        >
+                          <Shield className="h-4 w-4" />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </div>
+                    )}
 
                     {/* Menu Items: Logout */}
                     <div className="pt-2">
@@ -232,7 +276,7 @@ export function Navbar() {
                         type="button"
                         onClick={() => {
                           setIsDropdownOpen(false);
-                          signOut({ callbackUrl: "/" });
+                          setShowLogoutModal(true);
                         }}
                         className="font-heading flex w-full cursor-pointer items-center gap-2 rounded-2xl px-3 py-2 text-xs font-black text-rose-600 transition hover:bg-rose-50"
                       >
@@ -316,19 +360,52 @@ export function Navbar() {
                       </div>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={() => signOut({ callbackUrl: "/" })}
-                      className="font-heading shrink-0 rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-600 transition hover:bg-rose-100"
-                    >
-                      Logout
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={handleSyncRoles}
+                        disabled={isSyncing}
+                        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500"
+                        title="Sync Role"
+                      >
+                        <RotateCw
+                          className={`h-3.5 w-3.5 ${
+                            isSyncing ? "animate-spin text-[#2baee2]" : ""
+                          }`}
+                        />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsOpen(false);
+                          setShowLogoutModal(true);
+                        }}
+                        className="font-heading shrink-0 rounded-full border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-black text-rose-600 transition hover:bg-rose-100"
+                      >
+                        Logout
+                      </button>
+                    </div>
                   </div>
 
                   {/* Consistent Real Discord Role Badge */}
                   <div className="mt-2.5 flex items-center">
                     {renderRoleBadge()}
                   </div>
+
+                  {/* Admin link for mobile */}
+                  {user.isAdmin && (
+                    <div className="mt-3 border-t border-slate-200 pt-2.5">
+                      <Link
+                        href="/admin"
+                        onClick={() => setIsOpen(false)}
+                        className="font-heading flex items-center justify-center gap-2 rounded-xl bg-[#2baee2] py-2 text-xs font-black text-white shadow-sm"
+                      >
+                        <Shield className="h-4 w-4" />
+                        <span>Buka Admin Dashboard</span>
+                      </Link>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -373,6 +450,32 @@ export function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Playful Custom Logout Confirmation Modal */}
+      <ConfirmModal
+        isOpen={showLogoutModal}
+        onClose={() => setShowLogoutModal(false)}
+        onConfirm={async () => {
+          setIsLoggingOut(true);
+          try {
+            await signOut({ redirect: false });
+            window.location.href = "/";
+          } catch (e) {
+            console.error("Logout error:", e);
+            window.location.href = "/";
+          }
+        }}
+        title={locale === "id" ? "Konfirmasi Keluar Akun" : "Confirm Logout"}
+        description={
+          locale === "id"
+            ? "Apakah Anda yakin ingin keluar dari sesi akun Discord Bloom Universe?"
+            : "Are you sure you want to log out from your Bloom Universe Discord session?"
+        }
+        confirmText={locale === "id" ? "Ya, Keluar" : "Log Out"}
+        cancelText={locale === "id" ? "Batal" : "Cancel"}
+        variant="danger"
+        loading={isLoggingOut}
+      />
     </header>
   );
 }

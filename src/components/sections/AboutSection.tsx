@@ -75,7 +75,10 @@ export function AboutSection({ content, cards }: AboutSectionProps) {
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
+        <ScrollReveal
+          animation="fade-up"
+          className="mx-auto max-w-3xl text-center"
+        >
           <h2 className="font-heading text-3xl font-black tracking-tight text-[#1e1b4b] sm:text-5xl lg:text-6xl">
             {title}
           </h2>
@@ -107,11 +110,7 @@ export function AboutSection({ content, cards }: AboutSectionProps) {
             const cardNum = pillarDict?.number || card.number;
 
             return (
-              <ScrollReveal
-                key={card.id}
-                animation="fade-up"
-                delay={idx * 120}
-              >
+              <ScrollReveal key={card.id} animation="fade-up" delay={idx * 120}>
                 <Card className="h-full p-8">
                   <div
                     className={`font-heading mb-4 flex h-12 w-12 items-center justify-center rounded-2xl border-2 text-xl font-black ${colorStyle.badgeClass}`}

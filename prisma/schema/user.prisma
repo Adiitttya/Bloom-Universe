@@ -28,7 +28,11 @@ model User {
 
   accounts       Account[]
   sessions       Session[]
-  activityLogs   ActivityLog[]
+  adminLogs      AdminLog[]
+  memberLogs     MemberLog[]
+
+  @@index([role])
+  @@index([discordId])
 }
 
 model Account {
@@ -65,21 +69,10 @@ model Session {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model VerificationToken {
-  identifier String
-  token      String    @unique
-  expires    DateTime
-  createdAt  DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
-  updatedAt  DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
-  deletedAt  DateTime?
-
-  @@unique([identifier, token])
-}
-
-model ActivityLog {
+model AdminLog {
   id        String    @id @default(cuid())
   userId    String?
-  action    String    // "USER_LOGIN", "USER_LOGOUT", "UPDATE_HERO", etc.
+  action    String    // e.g. "ADMIN_LOGIN_SUCCESS", "ADMIN_LOGIN_FAILED", "ADMIN_LOGOUT", "UPLOAD_GALLERY_IMAGE", "UPDATE_HERO", etc.
   details   String?   @db.Text
   ipAddress String?
   userAgent String?
@@ -88,4 +81,32 @@ model ActivityLog {
   deletedAt DateTime?
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model MemberLog {
+  id        String    @id @default(cuid())
+  userId    String?
+  action    String    // e.g. "MEMBER_LOGIN", "MEMBER_LOGOUT", "INTERACTION_CLICK", "CLICK_EXTERNAL_LINK", "PAGE_VIEW", etc.
+  details   String?   @db.Text
+  targetUrl String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
+  updatedAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
+  deletedAt DateTime?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([createdAt])
+  @@index([userId])
+}
+
+model AdminRateLimit {
+  userId      String    @id       // Discord User ID dari session
+  count       Int       @default(0)
+  lockedUntil DateTime?
+  updatedAt   DateTime  @updatedAt
 }

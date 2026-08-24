@@ -47,7 +47,10 @@ export function Footer({ subWebs, socialLinks }: FooterProps) {
   return (
     <footer className="relative bg-white text-[#1e1b4b]">
       <div className="container mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
-        <ScrollReveal animation="fade-up" className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:gap-12">
+        <ScrollReveal
+          animation="fade-up"
+          className="grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4 lg:gap-12"
+        >
           {/* Brand Col */}
           <div className="space-y-4 sm:col-span-2">
             <Link href="/" className="flex items-center gap-3">

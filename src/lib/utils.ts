@@ -9,10 +9,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Get current Date object representing Asia/Jakarta (WIB - UTC+7) time for direct database storage
+ * Get current standard Date object for database storage
  */
 export function getWIBDate(): Date {
-  return new Date(Date.now() + 7 * 3600000);
+  return new Date();
 }
 
 /**
@@ -79,7 +79,23 @@ export function formatWIB(
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+      second: "2-digit",
       hour12: false,
     }).format(d) + " WIB"
   );
+}
+
+/**
+ * Validates that a URL uses a safe protocol (http or https only).
+ * Prevents javascript: protocol XSS and other protocol-based attacks.
+ * Returns true if the URL is valid and safe, or if the field is empty/optional.
+ */
+export function isValidExternalUrl(url: string | null | undefined): boolean {
+  if (!url || url.trim() === "") return true; // Optional fields are allowed to be empty
+  try {
+    const parsed = new URL(url.trim());
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false; // Unparseable URLs are invalid
+  }
 }

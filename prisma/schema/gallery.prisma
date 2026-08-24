@@ -8,4 +8,7 @@ model GalleryImage {
   createdAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')"))
   updatedAt DateTime  @default(dbgenerated("(now() + INTERVAL '7 hours')")) @updatedAt
   deletedAt DateTime?
+
+  @@index([isVisible])
+  @@index([createdAt])
 }

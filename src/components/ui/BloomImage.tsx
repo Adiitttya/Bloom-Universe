@@ -18,9 +18,16 @@ export function BloomImage({
   showShimmerIcon = false,
   quality = 80,
   priority = false,
+  sizes,
   ...props
 }: BloomImageProps) {
   const [isLoading, setIsLoading] = React.useState(!priority);
+
+  // Provide sensible fallback sizes if fill is active without explicit sizes
+  const effectiveSizes =
+    props.fill && !sizes
+      ? "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      : sizes;
 
   return (
     <div
@@ -47,6 +54,7 @@ export function BloomImage({
         alt={alt}
         quality={quality}
         priority={priority}
+        sizes={effectiveSizes}
         onLoad={() => setIsLoading(false)}
         className={cn(
           "transition-all duration-300 ease-out",

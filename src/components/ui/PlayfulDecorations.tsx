@@ -2,32 +2,7 @@
 
 import * as React from "react";
 
-// Playful 4-Point Cartoon Sparkle SVG
-export function SparkleIcon({
-  className = "",
-  size = 24,
-  color = "#ffc700",
-}: {
-  className?: string;
-  size?: number;
-  color?: string;
-}) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill={color}
-      xmlns="http://www.w3.org/2000/svg"
-      className={className}
-      aria-hidden="true"
-    >
-      <path d="M12 0C12 6.627 6.627 12 0 12C6.627 12 12 17.373 12 24C12 17.373 17.373 12 24 12C17.373 12 12 6.627 12 0Z" />
-    </svg>
-  );
-}
-
-// Playful 3D Cartoon Star SVG
+// Playful 3D 5-Point Cartoon Star SVG
 export function CartoonStar({
   className = "",
   size = 24,
@@ -88,25 +63,37 @@ export function HeroPlayfulDecorations() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Top Left Sparkle (Visible on Mobile & Desktop) */}
+      {/* Top Left Star */}
       <div className="animate-float-gentle absolute top-3 left-3 opacity-75 sm:top-6 sm:left-6 sm:opacity-85">
-        <SparkleIcon className="h-5 w-5 sm:h-7 sm:w-7" size={28} color="#ffc700" />
+        <CartoonStar
+          className="h-5 w-5 sm:h-7 sm:w-7"
+          size={28}
+          color="#ffc700"
+        />
       </div>
 
-      {/* Top Center-Left Star (Visible on Mobile & Desktop) */}
+      {/* Top Center-Left Star */}
       <div
         className="animate-float-gentle absolute top-14 left-[6%] opacity-60 sm:top-20 sm:left-[22%] sm:opacity-70"
         style={{ animationDelay: "1s" }}
       >
-        <CartoonStar className="h-4 w-4 sm:h-5 sm:w-5" size={22} color="#ffffff" />
+        <CartoonStar
+          className="h-4 w-4 sm:h-5 sm:w-5"
+          size={22}
+          color="#ffffff"
+        />
       </div>
 
-      {/* Left Bottom Mini Cloud (Visible on Mobile & Desktop) */}
+      {/* Left Bottom Mini Cloud */}
       <div
         className="animate-float-gentle absolute bottom-12 -left-2 opacity-70 sm:bottom-28 sm:left-[4%] sm:opacity-100"
         style={{ animationDelay: "2s" }}
       >
-        <FluffyCloudlet className="w-14 sm:w-20 lg:w-24" size={85} opacity={0.3} />
+        <FluffyCloudlet
+          className="w-14 sm:w-20 lg:w-24"
+          size={85}
+          opacity={0.3}
+        />
       </div>
 
       {/* Center Top Floating Cloudlet (Desktop only for depth) */}
@@ -117,28 +104,36 @@ export function HeroPlayfulDecorations() {
         <FluffyCloudlet size={70} opacity={0.25} />
       </div>
 
-      {/* Top Right Cute Sparkle (Visible on Mobile & Desktop) */}
+      {/* Top Right Star */}
       <div
         className="animate-float-gentle absolute top-3 right-3 opacity-85 sm:top-12 sm:right-[8%]"
         style={{ animationDelay: "0.8s" }}
       >
-        <SparkleIcon className="h-6 w-6 sm:h-8 sm:w-8" size={34} color="#ffc700" />
+        <CartoonStar
+          className="h-6 w-6 sm:h-8 sm:w-8"
+          size={34}
+          color="#ffc700"
+        />
       </div>
 
-      {/* Right Middle Star (Visible on Tablet & Desktop) */}
+      {/* Right Middle Star */}
       <div
-        className="animate-float-gentle absolute top-1/2 right-[3%] hidden sm:block opacity-70"
+        className="animate-float-gentle absolute top-1/2 right-[3%] hidden opacity-70 sm:block"
         style={{ animationDelay: "2.5s" }}
       >
         <CartoonStar size={26} color="#ffffff" />
       </div>
 
-      {/* Right Bottom Cloud (Visible on Mobile & Desktop) */}
+      {/* Right Bottom Cloud */}
       <div
-        className="animate-float-gentle absolute bottom-10 -right-2 opacity-65 sm:bottom-24 sm:right-[12%] sm:opacity-100"
+        className="animate-float-gentle absolute -right-2 bottom-10 opacity-65 sm:right-[12%] sm:bottom-24 sm:opacity-100"
         style={{ animationDelay: "3s" }}
       >
-        <FluffyCloudlet className="w-16 sm:w-22 lg:w-24" size={95} opacity={0.28} />
+        <FluffyCloudlet
+          className="w-16 sm:w-22 lg:w-24"
+          size={95}
+          opacity={0.28}
+        />
       </div>
     </div>
   );
@@ -151,17 +146,25 @@ export function SkySectionDecorations() {
       className="pointer-events-none absolute inset-0 z-0 overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* Top Left Star (Visible on Mobile & Desktop) */}
+      {/* Top Left Star */}
       <div className="animate-float-gentle absolute top-3 left-3 opacity-70 sm:top-8 sm:left-[6%]">
-        <CartoonStar className="h-4 w-4 sm:h-6 sm:w-6" size={24} color="#ffc700" />
+        <CartoonStar
+          className="h-4 w-4 sm:h-6 sm:w-6"
+          size={24}
+          color="#ffc700"
+        />
       </div>
 
-      {/* Top Right Sparkle (Visible on Mobile & Desktop) */}
+      {/* Top Right Star */}
       <div
         className="animate-float-gentle absolute top-4 right-3 opacity-80 sm:top-12 sm:right-[8%]"
         style={{ animationDelay: "1.2s" }}
       >
-        <SparkleIcon className="h-5 w-5 sm:h-7 sm:w-7" size={30} color="#ffc700" />
+        <CartoonStar
+          className="h-5 w-5 sm:h-7 sm:w-7"
+          size={30}
+          color="#ffc700"
+        />
       </div>
 
       {/* Middle Floating Cloud (Desktop only) */}
@@ -172,20 +175,28 @@ export function SkySectionDecorations() {
         <FluffyCloudlet size={75} opacity={0.25} />
       </div>
 
-      {/* Bottom Right Floating Cloud (Visible on Mobile & Desktop) */}
+      {/* Bottom Right Floating Cloud */}
       <div
-        className="animate-float-gentle absolute bottom-12 -right-3 opacity-60 sm:bottom-28 sm:right-[3%] sm:opacity-100"
+        className="animate-float-gentle absolute -right-3 bottom-12 opacity-60 sm:right-[3%] sm:bottom-28 sm:opacity-100"
         style={{ animationDelay: "1.7s" }}
       >
-        <FluffyCloudlet className="w-16 sm:w-20 lg:w-24" size={90} opacity={0.28} />
+        <FluffyCloudlet
+          className="w-16 sm:w-20 lg:w-24"
+          size={90}
+          opacity={0.28}
+        />
       </div>
 
-      {/* Floating Sparkle Bottom Left (Visible on Mobile & Desktop) */}
+      {/* Bottom Left Star */}
       <div
         className="animate-float-gentle absolute bottom-6 left-3 opacity-75 sm:bottom-20 sm:left-[8%]"
         style={{ animationDelay: "0.5s" }}
       >
-        <SparkleIcon className="h-4 w-4 sm:h-5 sm:w-5" size={22} color="#ffffff" />
+        <CartoonStar
+          className="h-4 w-4 sm:h-5 sm:w-5"
+          size={22}
+          color="#ffffff"
+        />
       </div>
     </div>
   );

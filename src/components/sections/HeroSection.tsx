@@ -29,7 +29,12 @@ export function HeroSection({ content }: HeroSectionProps) {
 
   // Reusable Mascot Sticker Component with Cartoon Lazy Loading & Compression
   const MascotComponent = (
-    <ScrollReveal animation="pop-in" delay={150} initialVisible={true} className="group relative">
+    <ScrollReveal
+      animation="pop-in"
+      delay={150}
+      initialVisible={true}
+      className="group relative"
+    >
       {/* Floating container holding BOTH the Mascot Logo and the BLOOMUN! Badge so they float in 100% sync */}
       <div className="animate-mascot-float relative inline-block">
         {/* Cute Floating Mascot Card */}
@@ -46,7 +51,7 @@ export function HeroSection({ content }: HeroSectionProps) {
         </div>
 
         {/* Floating Badge Tag - tightly overlapping the curved bottom right of the mascot logo, tilted to the left */}
-        <div className="font-heading pointer-events-none absolute right-1 bottom-1 -rotate-12 rounded-full border-4 border-white bg-[#ffc700] px-3.5 py-1 text-xs font-black tracking-wide text-[#452203] shadow-[0_6px_0_#d9a300,0_10px_20px_rgba(0,0,0,0.2)] sm:right-3 sm:bottom-3 sm:px-5 sm:py-2 sm:text-sm sm:-rotate-[14deg] md:right-4 md:bottom-4 lg:right-6 lg:bottom-6">
+        <div className="font-heading pointer-events-none absolute right-1 bottom-1 -rotate-12 rounded-full border-4 border-white bg-[#ffc700] px-3.5 py-1 text-xs font-black tracking-wide text-[#452203] shadow-[0_6px_0_#d9a300,0_10px_20px_rgba(0,0,0,0.2)] sm:right-3 sm:bottom-3 sm:-rotate-[14deg] sm:px-5 sm:py-2 sm:text-sm md:right-4 md:bottom-4 lg:right-6 lg:bottom-6">
           {dict.hero.badge}
         </div>
       </div>
@@ -55,10 +60,10 @@ export function HeroSection({ content }: HeroSectionProps) {
 
   return (
     <section className="relative overflow-hidden pt-0 pb-0 text-white sm:pt-4 lg:pt-13">
-      {/* Playful Floating Cartoon Stars, Sparkles & Clouds */}
+      {/* Playful Floating Cartoon Stars & Clouds */}
       <HeroPlayfulDecorations />
 
-      <div className="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Desktop Layout (lg screens and up: 2 Columns Side-by-Side) */}
         <div className="hidden lg:grid lg:grid-cols-12 lg:items-center lg:gap-10">
           {/* Left Column: Title -> Description -> Buttons */}
@@ -77,7 +82,11 @@ export function HeroSection({ content }: HeroSectionProps) {
 
             <ScrollReveal animation="fade-up" delay={240} initialVisible={true}>
               <div className="mt-8 flex items-center gap-4">
-                <a href={primaryCtaUrl} target="_blank" rel="noopener noreferrer">
+                <a
+                  href={primaryCtaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <Button variant="yellow" size="lg" className="gap-3">
                     <DiscordIcon size={22} />
                     <span>{primaryCtaText}</span>
@@ -104,7 +113,12 @@ export function HeroSection({ content }: HeroSectionProps) {
         {/* Mobile & Tablet Layout (< lg screens: Title -> Logo -> Description -> Buttons) */}
         <div className="flex flex-col items-center text-center lg:hidden">
           {/* 1. Title */}
-          <ScrollReveal animation="fade-up" delay={0} initialVisible={true} className="w-full">
+          <ScrollReveal
+            animation="fade-up"
+            delay={0}
+            initialVisible={true}
+            className="w-full"
+          >
             <h1 className="font-heading text-shadow-cartoon-white text-3xl leading-[1.15] font-black tracking-tight sm:text-5xl md:text-6xl">
               {title}
             </h1>
@@ -116,14 +130,24 @@ export function HeroSection({ content }: HeroSectionProps) {
           </div>
 
           {/* 3. Description / Subtitle */}
-          <ScrollReveal animation="fade-up" delay={120} initialVisible={true} className="w-full">
+          <ScrollReveal
+            animation="fade-up"
+            delay={120}
+            initialVisible={true}
+            className="w-full"
+          >
             <p className="mx-auto max-w-xl text-sm leading-relaxed font-bold text-white sm:text-base md:text-lg">
               {subtitle}
             </p>
           </ScrollReveal>
 
           {/* 4. Action Buttons */}
-          <ScrollReveal animation="fade-up" delay={220} initialVisible={true} className="w-full">
+          <ScrollReveal
+            animation="fade-up"
+            delay={220}
+            initialVisible={true}
+            className="w-full"
+          >
             <div className="mt-6 flex w-full flex-col items-center justify-center gap-3 sm:mt-8 sm:w-auto sm:flex-row sm:gap-4">
               <a
                 href={primaryCtaUrl}

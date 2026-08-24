@@ -46,9 +46,12 @@ export function SubWebCards({ items }: SubWebCardsProps) {
       {/* Playful Floating Cartoon Stars & Cloudlets in Sky */}
       <SkySectionDecorations />
 
-      <div className="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
+        <ScrollReveal
+          animation="fade-up"
+          className="mx-auto max-w-3xl text-center"
+        >
           <h2 className="font-heading text-shadow-cartoon-white text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">
             {dict.ecosystem.title}
           </h2>
@@ -88,7 +91,9 @@ export function SubWebCards({ items }: SubWebCardsProps) {
 
                       {/* Only show badge if coming soon / in development */}
                       {!sub.isLive && (
-                        <Badge variant="soon">{dict.ecosystem.comingSoon}</Badge>
+                        <Badge variant="soon">
+                          {dict.ecosystem.comingSoon}
+                        </Badge>
                       )}
                     </div>
 

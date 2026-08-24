@@ -3,12 +3,7 @@
 import * as React from "react";
 
 export type AnimationType =
-  | "fade-up"
-  | "fade-down"
-  | "fade-left"
-  | "fade-right"
-  | "zoom-in"
-  | "pop-in";
+  "fade-up" | "fade-down" | "fade-left" | "fade-right" | "zoom-in" | "pop-in";
 
 export interface ScrollRevealProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;

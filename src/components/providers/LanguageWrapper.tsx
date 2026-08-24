@@ -5,7 +5,9 @@ import { SessionProvider } from "next-auth/react";
 import type { Session } from "next-auth";
 import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { AuthModalProvider } from "@/lib/auth/AuthModalContext";
+import { ToastProvider } from "@/components/ui/Toast";
 import { LoginModal } from "@/components/auth/LoginModal";
+import { InteractionTracker } from "@/components/analytics/InteractionTracker";
 import type { Locale } from "@/lib/i18n/dictionaries";
 
 export function LanguageWrapper({
@@ -25,10 +27,13 @@ export function LanguageWrapper({
       refetchWhenOffline={false}
     >
       <LanguageProvider initialLocale={initialLocale}>
-        <AuthModalProvider>
-          {children}
-          <LoginModal />
-        </AuthModalProvider>
+        <ToastProvider>
+          <AuthModalProvider>
+            {children}
+            <LoginModal />
+            <InteractionTracker />
+          </AuthModalProvider>
+        </ToastProvider>
       </LanguageProvider>
     </SessionProvider>
   );

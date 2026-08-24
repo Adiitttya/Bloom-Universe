@@ -2,11 +2,18 @@
 
 import * as React from "react";
 import { SOCIAL_LINKS } from "@/lib/constants";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Link as LinkIcon } from "lucide-react";
 import {
   DiscordIcon,
   TikTokIcon,
   InstagramIcon,
+  YouTubeIcon,
+  XTwitterIcon,
+  WhatsAppIcon,
+  SpotifyIcon,
+  TwitchIcon,
+  GitHubIcon,
+  FacebookIcon,
 } from "@/components/ui/SocialIcons";
 import { CloudDividerTop } from "@/components/ui/CloudDividers";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
@@ -45,40 +52,102 @@ const DEFAULT_SOCIALS: SocialLinkItem[] = [
   },
 ];
 
-const PLATFORM_STYLES: Record<
-  string,
-  {
-    icon: React.ComponentType<{ size?: number; className?: string }>;
-    bg: string;
-    shadow: string;
-  }
-> = {
-  discord: {
-    icon: DiscordIcon,
-    bg: "bg-[#5865F2]",
-    shadow: "shadow-[0_8px_0_#3c45a5]",
-  },
-  tiktok: {
-    icon: TikTokIcon,
-    bg: "bg-[#010101]",
-    shadow: "shadow-[0_8px_0_#333333]",
-  },
-  instagram: {
-    icon: InstagramIcon,
-    bg: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
-    shadow: "shadow-[0_8px_0_#961860]",
-  },
-};
-
-function getPlatformKey(platform: string): "discord" | "tiktok" | "instagram" {
+function getPlatformConfig(platform: string) {
   const p = (platform || "").toLowerCase();
-  if (p.includes("tiktok")) return "tiktok";
-  if (p.includes("insta")) return "instagram";
-  return "discord";
+  if (p.includes("tiktok")) {
+    return {
+      icon: TikTokIcon,
+      bg: "bg-[#010101]",
+      shadow: "shadow-[0_8px_0_#222222]",
+      key: "tiktok",
+    };
+  }
+  if (p.includes("insta")) {
+    return {
+      icon: InstagramIcon,
+      bg: "bg-gradient-to-tr from-[#F58529] via-[#DD2A7B] to-[#8134AF]",
+      shadow: "shadow-[0_8px_0_#961860]",
+      key: "instagram",
+    };
+  }
+  if (p.includes("youtube")) {
+    return {
+      icon: YouTubeIcon,
+      bg: "bg-[#FF0000]",
+      shadow: "shadow-[0_8px_0_#b30000]",
+      key: "youtube",
+    };
+  }
+  if (p.includes("twitter") || p === "x") {
+    return {
+      icon: XTwitterIcon,
+      bg: "bg-[#0f1419]",
+      shadow: "shadow-[0_8px_0_#000000]",
+      key: "twitter",
+    };
+  }
+  if (p.includes("whatsapp") || p.includes("wa")) {
+    return {
+      icon: WhatsAppIcon,
+      bg: "bg-[#25D366]",
+      shadow: "shadow-[0_8px_0_#1a9648]",
+      key: "whatsapp",
+    };
+  }
+  if (p.includes("spotify")) {
+    return {
+      icon: SpotifyIcon,
+      bg: "bg-[#1DB954]",
+      shadow: "shadow-[0_8px_0_#13823a]",
+      key: "spotify",
+    };
+  }
+  if (p.includes("twitch")) {
+    return {
+      icon: TwitchIcon,
+      bg: "bg-[#9146FF]",
+      shadow: "shadow-[0_8px_0_#6224c2]",
+      key: "twitch",
+    };
+  }
+  if (p.includes("github")) {
+    return {
+      icon: GitHubIcon,
+      bg: "bg-[#24292e]",
+      shadow: "shadow-[0_8px_0_#14171a]",
+      key: "github",
+    };
+  }
+  if (p.includes("facebook") || p.includes("fb")) {
+    return {
+      icon: FacebookIcon,
+      bg: "bg-[#1877F2]",
+      shadow: "shadow-[0_8px_0_#0e4ea3]",
+      key: "facebook",
+    };
+  }
+  if (p.includes("discord")) {
+    return {
+      icon: DiscordIcon,
+      bg: "bg-[#5865F2]",
+      shadow: "shadow-[0_8px_0_#3c45a5]",
+      key: "discord",
+    };
+  }
+
+  // Default / Unknown Link
+  return {
+    icon: (props: { size?: number; className?: string }) => (
+      <LinkIcon size={props.size || 28} className={props.className} />
+    ),
+    bg: "bg-[#2baee2]",
+    shadow: "shadow-[0_8px_0_#1b8ebc]",
+    key: "unknown",
+  };
 }
 
 export function SocialLinks({ links }: SocialLinksProps) {
-  const { dict, locale } = useLanguage();
+  const { dict } = useLanguage();
   const displayLinks = links && links.length > 0 ? links : DEFAULT_SOCIALS;
 
   return (
@@ -86,9 +155,12 @@ export function SocialLinks({ links }: SocialLinksProps) {
       {/* Playful Floating Stars & Cloudlets in Sky */}
       <SkySectionDecorations />
 
-      <div className="container relative z-10 mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
+        <ScrollReveal
+          animation="fade-up"
+          className="mx-auto max-w-3xl text-center"
+        >
           <h2 className="font-heading text-shadow-cartoon-white text-3xl font-black tracking-tight sm:text-5xl lg:text-6xl">
             {dict.socials.title}
           </h2>
@@ -99,29 +171,31 @@ export function SocialLinks({ links }: SocialLinksProps) {
         </ScrollReveal>
 
         {/* 3D Social Buttons Grid */}
-        <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 sm:mt-16 sm:grid-cols-3">
+        <div className="mx-auto mt-12 grid max-w-4xl grid-cols-1 gap-6 sm:mt-16 sm:grid-cols-2 md:grid-cols-3">
           {displayLinks.map((s, idx) => {
-            const platformKey = getPlatformKey(s.platform);
-            const style = PLATFORM_STYLES[platformKey];
-            const IconComponent = style.icon;
+            const config = getPlatformConfig(s.platform);
+            const IconComponent = config.icon;
 
-            // Translated name and handle from active dictionary
-            const platformDict = dict.socials.platforms?.[platformKey];
+            // Translated name and handle from active dictionary if available
+            const platformDict =
+              dict.socials.platforms?.[
+                config.key as "discord" | "tiktok" | "instagram"
+              ];
 
             const name = platformDict?.name || s.name;
             const handle = platformDict?.handle || s.handle || s.name;
 
             return (
               <ScrollReveal
-                key={s.id || s.platform}
+                key={s.id || s.platform || idx}
                 animation="pop-in"
-                delay={idx * 120}
+                delay={idx * 100}
               >
                 <a
                   href={s.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group flex h-full flex-col justify-between rounded-3xl border-4 border-white p-6 text-white transition-all duration-200 hover:-translate-y-1 active:translate-y-1 sm:p-8 ${style.bg} ${style.shadow}`}
+                  className={`group flex h-full flex-col justify-between rounded-3xl border-4 border-white p-6 text-white transition-all duration-200 hover:-translate-y-1 active:translate-y-1 sm:p-8 ${config.bg} ${config.shadow}`}
                 >
                   <div>
                     <div className="flex items-center justify-between">

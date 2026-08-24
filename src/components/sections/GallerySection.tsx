@@ -123,7 +123,10 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
     >
       <div className="container mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <ScrollReveal animation="fade-up" className="mx-auto max-w-3xl text-center">
+        <ScrollReveal
+          animation="fade-up"
+          className="mx-auto max-w-3xl text-center"
+        >
           <h2 className="font-heading text-3xl font-black tracking-tight text-[#1e1b4b] sm:text-5xl lg:text-6xl">
             {dict.gallery.title}
           </h2>
@@ -145,11 +148,7 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
                   : "rotate-[-1deg] hover:rotate-[0deg]";
 
             return (
-              <ScrollReveal
-                key={img.id}
-                animation="pop-in"
-                delay={index * 120}
-              >
+              <ScrollReveal key={img.id} animation="pop-in" delay={index * 120}>
                 <div
                   onClick={() => setActiveImageIndex(actualIndex)}
                   className={`group relative cursor-pointer overflow-hidden rounded-[2rem] border-4 border-white bg-white p-4 pb-6 shadow-[0_10px_0_#d1e3ec,0_20px_25px_-5px_rgba(0,0,0,0.08)] transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-[0_14px_0_#d1e3ec,0_25px_30px_-5px_rgba(0,0,0,0.12)] ${rotationStyle}`}
@@ -184,7 +183,11 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
 
         {/* 3D Pagination Controls */}
         {totalPages > 1 && (
-          <ScrollReveal animation="fade-up" delay={200} className="mt-12 flex items-center justify-center gap-2 sm:gap-3">
+          <ScrollReveal
+            animation="fade-up"
+            delay={200}
+            className="mt-12 flex items-center justify-center gap-2 sm:gap-3"
+          >
             {/* Prev Button */}
             <button
               type="button"
@@ -254,14 +257,14 @@ export function GallerySection({ images = [] }: GallerySectionProps) {
                 </span>
               </div>
 
-              {/* Close Button */}
+              {/* Consistent Rounded-XL Close Button */}
               <button
                 type="button"
                 onClick={() => setActiveImageIndex(null)}
                 aria-label={dict.gallery.close}
-                className="btn-3d-yellow flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-full sm:h-11 sm:w-11"
+                className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-slate-100 text-slate-500 transition hover:bg-slate-200 hover:text-slate-800 active:scale-95 sm:h-10 sm:w-10"
               >
-                <X className="h-5 w-5 sm:h-6 sm:w-6" />
+                <X className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
             </div>
 

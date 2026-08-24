@@ -41,8 +41,8 @@ export default async function HomePage() {
       db.galleryImage
         .findMany({
           where: { isVisible: true },
-          orderBy: { order: "asc" },
-          take: 6,
+          orderBy: { createdAt: "desc" },
+          take: 50,
         })
         .catch(() => []),
       db.subWebCard
@@ -143,7 +143,7 @@ export default async function HomePage() {
 
     return (
       <>
-        {/* Hero & About intentionally use the i18n Dictionary for full multi-language translation */}
+        {/* Hero & About use the i18n Dictionary for full multi-language translation (ID / EN) */}
         <HeroSection />
         <ServerStats initialStats={discordStats} />
         <AboutSection />

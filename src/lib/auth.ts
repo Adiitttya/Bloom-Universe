@@ -6,6 +6,7 @@ import { fetchDiscordGuildMember, getMemberHighestRole } from "@/lib/discord";
 import { Role } from "@prisma/client";
 import type { HighestRoleInfo } from "@/lib/types";
 import { getWIBDate } from "@/lib/utils";
+import { logAdminActivity, logMemberActivity } from "@/lib/activity-logger";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   ...authConfig,
@@ -24,6 +25,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     strategy: "jwt",
   },
   events: {
+    async signIn(message) {
+      if (message.user) {
+        const userId = message.user.id;
+        const name =
+          message.user.name || (message.user as any).username || "Member";
+        const role = (message.user as any).role || "MEMBER";
+
+        if (role === "ADMIN") {
+          await logAdminActivity({
+            userId,
+            action: "ADMIN_LOGIN_DISCORD",
+            details: `Admin berhasil login via Discord: @${name}`,
+          });
+        } else {
+          await logMemberActivity({
+            userId,
+            action: "MEMBER_LOGIN",
+            details: `Member berhasil login via Discord: @${name}`,
+          });
+        }
+      }
+    },
     async signOut(message) {
       if ("token" in message && message.token) {
         const userId =
@@ -34,28 +57,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           (message.token.username as string) ||
           (message.token.name as string) ||
           "user";
+        const role = (message.token as any).role || "MEMBER";
 
-        if (userId) {
-          try {
-            await db.activityLog.create({
-              data: {
-                userId,
-                action: "USER_LOGOUT",
-                details: `Logout: ${username}`,
-                createdAt: getWIBDate(),
-                updatedAt: getWIBDate(),
-              },
-            });
-          } catch (error) {
-            console.error("Failed to record logout in activityLog:", error);
-          }
+        if (role === "ADMIN") {
+          await logAdminActivity({
+            userId,
+            action: "ADMIN_LOGOUT",
+            details: `Admin logout: @${username}`,
+          });
+        } else {
+          await logMemberActivity({
+            userId,
+            action: "MEMBER_LOGOUT",
+            details: `Member logout: @${username}`,
+          });
         }
       }
     },
   },
   callbacks: {
     ...authConfig.callbacks,
-    async jwt({ token, profile, account }) {
+    async jwt({ token, profile, account, trigger }) {
+      // 1. Initial OAuth Sign In
       if (account && profile) {
         const discordId = profile.id as string;
         const username = (profile.username as string) || "user";
@@ -70,86 +93,97 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             ? `https://cdn.discordapp.com/avatars/${discordId}/${profile.avatar}.png`
             : (profile.picture as string) || null);
 
-        // Fetch guild membership, server roles, and highest role from Discord
-        const memberDetails = await fetchDiscordGuildMember(discordId);
-        const highestRole = memberDetails.isInGuild
-          ? await getMemberHighestRole(memberDetails.roles)
-          : null;
-        const otherRolesCount = Math.max(0, memberDetails.roles.length - 1);
+        token.id = token.sub || discordId;
+        token.discordId = discordId;
+        token.username = username;
+        token.displayName = displayName;
+        token.email = email;
+        token.image = avatarUrl;
+      }
 
-        // Verify Admin Role ID
-        const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
-          .split(",")
-          .map((id) => id.trim())
-          .filter(Boolean);
+      // 2. Throttled Live Discord Role & Guild Sync (Every 10 minutes or on manual update trigger)
+      const discordId = (token.discordId as string) || (token.sub as string);
+      const shouldSync =
+        trigger === "update" ||
+        !token.lastRoleSyncAt ||
+        Date.now() - ((token.lastRoleSyncAt as number) || 0) > 10 * 60 * 1000;
 
-        const hasAdminRole = memberDetails.roles.some((roleId) =>
-          adminRoleIds.includes(roleId)
-        );
-
-        let assignedRole: Role = Role.GUEST;
-        if (hasAdminRole) {
-          assignedRole = Role.ADMIN;
-        } else if (memberDetails.isInGuild) {
-          assignedRole = Role.MEMBER;
-        } else {
-          assignedRole = Role.GUEST;
-        }
-
-        const effectiveNickname =
-          memberDetails.nickname || displayName || username;
-
-        const nowWIB = getWIBDate();
-
-        // Upsert user in Neon PostgreSQL Database
+      if (discordId && shouldSync) {
         try {
-          const dbUser = await db.user.upsert({
-            where: { discordId },
-            create: {
-              discordId,
-              username,
-              displayName,
-              nickname: effectiveNickname,
-              email: email || undefined,
-              image: avatarUrl,
-              isInGuild: memberDetails.isInGuild,
-              guildRoles: memberDetails.roles,
-              role: assignedRole,
-              lastLoginAt: nowWIB,
-              createdAt: nowWIB,
-              updatedAt: nowWIB,
-            },
-            update: {
-              username,
-              displayName,
-              nickname: effectiveNickname,
-              email: email || undefined,
-              image: avatarUrl,
-              isInGuild: memberDetails.isInGuild,
-              guildRoles: memberDetails.roles,
-              role: assignedRole,
-              lastLoginAt: nowWIB,
-              updatedAt: nowWIB,
-            },
-          });
+          token.lastRoleSyncAt = Date.now();
+          // Fetch live guild membership, server roles, and highest role directly from Discord API
+          const memberDetails = await fetchDiscordGuildMember(discordId);
+          const highestRole = memberDetails.isInGuild
+            ? await getMemberHighestRole(memberDetails.roles)
+            : null;
+          const otherRolesCount = Math.max(0, memberDetails.roles.length - 1);
 
-          // Record login audit log
-          await db.activityLog.create({
-            data: {
-              userId: dbUser.id,
-              action: "USER_LOGIN",
-              details: `Login via Discord: ${username} (Role: ${assignedRole}, inGuild: ${memberDetails.isInGuild})`,
-              createdAt: nowWIB,
-              updatedAt: nowWIB,
-            },
-          });
+          // Verify Admin Role ID
+          const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
+            .split(",")
+            .map((id) => id.trim())
+            .filter(Boolean);
 
-          token.id = dbUser.id;
+          const hasAdminRole = memberDetails.roles.some((roleId) =>
+            adminRoleIds.includes(roleId)
+          );
+
+          let assignedRole: Role = Role.GUEST;
+          if (hasAdminRole) {
+            assignedRole = Role.ADMIN;
+          } else if (memberDetails.isInGuild) {
+            assignedRole = Role.MEMBER;
+          } else {
+            assignedRole = Role.GUEST;
+          }
+
+          const username = (token.username as string) || "user";
+          const displayName = (token.displayName as string) || username;
+          const effectiveNickname =
+            memberDetails.nickname || displayName || username;
+          const avatarUrl =
+            (token.image as string) || (token.picture as string) || undefined;
+
+          const nowWIB = getWIBDate();
+
+          // Upsert/Update user in Neon PostgreSQL Database
+          try {
+            const dbUser = await db.user.upsert({
+              where: { discordId },
+              create: {
+                discordId,
+                username,
+                displayName,
+                nickname: effectiveNickname,
+                email: (token.email as string) || undefined,
+                image: avatarUrl,
+                isInGuild: memberDetails.isInGuild,
+                guildRoles: memberDetails.roles,
+                role: assignedRole,
+                lastLoginAt: nowWIB,
+                createdAt: nowWIB,
+                updatedAt: nowWIB,
+              },
+              update: {
+                username,
+                displayName,
+                nickname: effectiveNickname,
+                isInGuild: memberDetails.isInGuild,
+                guildRoles: memberDetails.roles,
+                role: assignedRole,
+                updatedAt: nowWIB,
+              },
+            });
+
+            token.id = dbUser.id;
+            token.nickname =
+              dbUser.customNickname || dbUser.nickname || effectiveNickname;
+          } catch (dbErr) {
+            console.error("DB upsert in jwt error:", dbErr);
+            token.nickname = effectiveNickname;
+          }
+
           token.discordId = discordId;
-          token.username = username;
-          token.displayName = displayName;
-          token.nickname =
-            dbUser.customNickname || dbUser.nickname || effectiveNickname;
           token.isInGuild = memberDetails.isInGuild;
           token.role = assignedRole;
           token.isAdmin = hasAdminRole;
@@ -157,20 +191,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           token.highestRole = highestRole;
           token.otherRolesCount = otherRolesCount;
         } catch (error) {
-          console.error(
-            "Failed to upsert user to database during login:",
-            error
-          );
-          token.discordId = discordId;
-          token.username = username;
-          token.displayName = displayName;
-          token.nickname = effectiveNickname;
-          token.isInGuild = memberDetails.isInGuild;
-          token.role = assignedRole;
-          token.isAdmin = hasAdminRole;
-          token.guildRoles = memberDetails.roles;
-          token.highestRole = highestRole;
-          token.otherRolesCount = otherRolesCount;
+          console.error("Failed to refresh Discord roles during jwt:", error);
         }
       }
 
