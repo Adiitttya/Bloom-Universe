@@ -12,6 +12,8 @@ import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useLoginModal } from "@/lib/auth/AuthModalContext";
 import { useSession, signOut } from "next-auth/react";
 import { ConfirmModal } from "@/components/ui/ConfirmModal";
+import { useToast } from "@/components/ui/Toast";
+import { syncUserRoleAction } from "@/lib/auth/user-actions";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -24,15 +26,39 @@ export function Navbar() {
   const { dict, locale } = useLanguage();
   const { openLoginModal } = useLoginModal();
   const { data: session, update } = useSession();
+  const { showToast } = useToast();
 
   const user = session?.user;
 
   const handleSyncRoles = async () => {
     setIsSyncing(true);
     try {
+      const result = await syncUserRoleAction();
       await update();
+      if (result.success) {
+        showToast({
+          type: "success",
+          title: locale === "id" ? "Role Terupdate!" : "Role Updated!",
+          message:
+            result.message ||
+            (locale === "id"
+              ? "Status role Discord Anda berhasil diperbarui."
+              : "Your Discord roles have been refreshed successfully."),
+        });
+      } else {
+        showToast({
+          type: "warning",
+          title: locale === "id" ? "Info Sinkronisasi" : "Sync Info",
+          message: result.error || "Gagal menyinkronkan status Discord.",
+        });
+      }
     } catch (err) {
       console.error("Failed to sync roles:", err);
+      showToast({
+        type: "error",
+        title: "Error",
+        message: locale === "id" ? "Gagal memuat status Discord." : "Failed to sync Discord status.",
+      });
     } finally {
       setIsSyncing(false);
     }

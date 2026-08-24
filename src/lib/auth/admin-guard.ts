@@ -1,30 +1,79 @@
 import { auth } from "@/lib/auth";
 import { cookies } from "next/headers";
+import { db } from "@/lib/db";
+import { fetchDiscordGuildMember } from "@/lib/discord";
+import { Role } from "@prisma/client";
 import type { UserSession } from "@/lib/types";
 
 export const ADMIN_COOKIE_NAME = "bloom_admin_verified";
 
 /**
- * Checks if a given user object has admin privileges.
+ * Checks if a given user object has admin privileges with real-time DB & Discord fallback.
  */
-export function checkIsAdmin(
+export async function checkIsAdmin(
   user?: {
+    id?: string;
+    discordId?: string;
     isAdmin?: boolean;
     role?: string;
     guildRoles?: string[];
   } | null
-): boolean {
+): Promise<boolean> {
   if (!user) return false;
+
+  // 1. Direct session check
   if (Boolean(user.isAdmin)) return true;
   if (user.role === "ADMIN" || user.role === "SUPER_ADMIN") return true;
 
+  const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+
   if (Array.isArray(user.guildRoles) && user.guildRoles.length > 0) {
-    const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
-      .split(",")
-      .map((id) => id.trim())
-      .filter(Boolean);
     if (user.guildRoles.some((r) => adminRoleIds.includes(r))) {
       return true;
+    }
+  }
+
+  // 2. Real-time Live Database check fallback (in case role was updated in DB directly)
+  const discordId = user.discordId;
+  if (discordId) {
+    try {
+      const dbUser = await db.user.findUnique({
+        where: { discordId },
+        select: { role: true, guildRoles: true },
+      });
+
+      if (dbUser) {
+        if (dbUser.role === Role.ADMIN) return true;
+        if (
+          Array.isArray(dbUser.guildRoles) &&
+          dbUser.guildRoles.some((r) => adminRoleIds.includes(r))
+        ) {
+          return true;
+        }
+      }
+
+      // 3. Real-time Discord API verification fallback (in case user just received Discord role)
+      const memberDetails = await fetchDiscordGuildMember(discordId);
+      if (
+        memberDetails.isInGuild &&
+        memberDetails.roles.some((r) => adminRoleIds.includes(r))
+      ) {
+        // Sync to DB immediately
+        await db.user.update({
+          where: { discordId },
+          data: {
+            role: Role.ADMIN,
+            guildRoles: memberDetails.roles,
+            isInGuild: true,
+          },
+        }).catch(() => {});
+        return true;
+      }
+    } catch (err) {
+      console.error("Live admin check error:", err);
     }
   }
 
@@ -42,7 +91,8 @@ export async function requireAdminSession(): Promise<UserSession> {
     throw new Error("Unauthorized: Anda belum login.");
   }
 
-  if (!checkIsAdmin(session.user)) {
+  const isAdmin = await checkIsAdmin(session.user);
+  if (!isAdmin) {
     throw new Error("Forbidden: Akun Anda tidak memiliki role Admin.");
   }
 

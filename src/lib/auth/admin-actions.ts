@@ -35,7 +35,7 @@ export async function verifyAdminPasscodeAction(passcode: string): Promise<{
 }> {
   const session = await auth();
 
-  if (!session?.user || !checkIsAdmin(session.user)) {
+  if (!session?.user || !(await checkIsAdmin(session.user))) {
     return {
       success: false,
       error: "Sesi tidak valid atau Anda bukan Admin.",

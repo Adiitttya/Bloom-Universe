@@ -22,8 +22,8 @@ export function LanguageWrapper({
   return (
     <SessionProvider
       session={session}
-      refetchInterval={0}
-      refetchOnWindowFocus={false}
+      refetchInterval={30}
+      refetchOnWindowFocus={true}
       refetchWhenOffline={false}
     >
       <LanguageProvider initialLocale={initialLocale}>

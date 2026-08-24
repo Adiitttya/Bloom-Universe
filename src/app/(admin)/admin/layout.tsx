@@ -22,7 +22,8 @@ export default async function AdminLayout({
   }
 
   // 2. Check Admin Role (If non-admin, render 404 Not Found directly without redirecting to /forbidden)
-  if (!checkIsAdmin(session.user)) {
+  const isAdmin = await checkIsAdmin(session.user);
+  if (!isAdmin) {
     notFound();
   }
 

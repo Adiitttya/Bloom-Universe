@@ -101,16 +101,17 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.image = avatarUrl;
       }
 
-      // 2. Throttled Live Discord Role & Guild Sync (Every 10 minutes or on manual update trigger)
+      // 2. Real-time Live Discord Role & Guild Sync (Every 15 seconds cooldown or on manual update trigger)
       const discordId = (token.discordId as string) || (token.sub as string);
       const shouldSync =
         trigger === "update" ||
         !token.lastRoleSyncAt ||
-        Date.now() - ((token.lastRoleSyncAt as number) || 0) > 10 * 60 * 1000;
+        Date.now() - ((token.lastRoleSyncAt as number) || 0) > 15 * 1000;
 
       if (discordId && shouldSync) {
         try {
           token.lastRoleSyncAt = Date.now();
+
           // Fetch live guild membership, server roles, and highest role directly from Discord API
           const memberDetails = await fetchDiscordGuildMember(discordId);
           const highestRole = memberDetails.isInGuild
@@ -118,19 +119,35 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             : null;
           const otherRolesCount = Math.max(0, memberDetails.roles.length - 1);
 
-          // Verify Admin Role ID
+          // Verify Admin Role ID from Discord environment settings
           const adminRoleIds = (process.env.DISCORD_ADMIN_ROLE_IDS || "")
             .split(",")
             .map((id) => id.trim())
             .filter(Boolean);
 
-          const hasAdminRole = memberDetails.roles.some((roleId) =>
+          let hasAdminRole = memberDetails.roles.some((roleId) =>
             adminRoleIds.includes(roleId)
           );
 
+          // Also check if user is already assigned ADMIN directly in PostgreSQL Database
+          let existingDbRole: Role | null = null;
+          try {
+            const existingUser = await db.user.findUnique({
+              where: { discordId },
+              select: { role: true },
+            });
+            if (existingUser?.role === Role.ADMIN) {
+              existingDbRole = Role.ADMIN;
+              hasAdminRole = true;
+            }
+          } catch {
+            // Non-blocking
+          }
+
           let assignedRole: Role = Role.GUEST;
-          if (hasAdminRole) {
+          if (hasAdminRole || existingDbRole === Role.ADMIN) {
             assignedRole = Role.ADMIN;
+            hasAdminRole = true;
           } else if (memberDetails.isInGuild) {
             assignedRole = Role.MEMBER;
           } else {
@@ -209,7 +226,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.role =
           (token.role as "GUEST" | "MEMBER" | "ADMIN" | "SUPER_ADMIN") ||
           "GUEST";
-        session.user.isAdmin = Boolean(token.isAdmin);
+        session.user.isAdmin = Boolean(
+          token.isAdmin ||
+            token.role === "ADMIN" ||
+            token.role === "SUPER_ADMIN"
+        );
         session.user.guildRoles = (token.guildRoles as string[]) || [];
         session.user.highestRole =
           (token.highestRole as HighestRoleInfo | null | undefined) || null;

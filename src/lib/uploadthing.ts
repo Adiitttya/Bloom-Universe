@@ -18,7 +18,7 @@ export const ourFileRouter = {
       const session = await auth();
 
       // Ensure only authorized ADMIN users can upload images
-      if (!session?.user || !checkIsAdmin(session.user)) {
+      if (!session?.user || !(await checkIsAdmin(session.user))) {
         throw new UploadThingError(
           "Hanya Administrator yang memiliki izin untuk mengunggah gambar."
         );
